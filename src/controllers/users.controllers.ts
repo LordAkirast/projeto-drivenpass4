@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { userBodyProtocol } from "../protocols/users.protocols";
 import { EmailAlreadyExists, generalServerError } from "../middlewares/errors.middleware";
 import { operationSuccesfull } from "../middlewares/success.middleware";
+import { usersSchema } from "../schemas/users.schemas";
 
 const prisma = new PrismaClient()
 

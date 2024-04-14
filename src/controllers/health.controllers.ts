@@ -22,14 +22,14 @@ export async function healthCreate(req: Request, res: Response) {
     }
 
     try {
-        ///middleware
-        const { value, error } = healthSchema.validate(healthBody)
+        // ///middleware
+        // const { value, error } = healthSchema.validate(healthBody)
 
-        if (error) {
+        // if (error) {
 
-            return res.status(422).send(error.details[0].message)
-        }
-        ///middleware
+        //     return res.status(422).send(error.details[0].message)
+        // }
+        // ///middleware
 
         const infoVerify = await prisma.test.findUnique({
             where: { email: healthBody.email }
