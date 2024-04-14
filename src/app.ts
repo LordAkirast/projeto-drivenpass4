@@ -17,7 +17,7 @@ const app = express()
 app
     .use(cors())
     .use(express.json())
-    .use('/health', validateHealthSchema, healthRouter)
+    .use('/health', healthRouter)
     .use('/users', usersRouter)
 
 
