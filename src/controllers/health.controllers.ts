@@ -89,12 +89,12 @@ export async function healthUpdate(req: Request, res: Response) {
     const healthBody = req.body as healthBodyProtocol
 
 
-    ///middleware
-    const { value, error } = healthUpdateSchema.validate(healthBody)
-    if (error) {
-        return res.status(422).send(error.details[0].message)
-    }
-    ///middleware
+    // ///middleware
+    // const { value, error } = healthUpdateSchema.validate(healthBody)
+    // if (error) {
+    //     return res.status(422).send(error.details[0].message)
+    // }
+    // ///middleware
 
 
     try {

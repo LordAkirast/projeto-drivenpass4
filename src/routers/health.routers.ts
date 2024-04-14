@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { healthCreate, healthDelete, healthRead, healthReadByEmail, healthTest, healthUpdate } from "../controllers/health.controllers";
-import { validateHealthSchema } from "../middlewares/health.middleware";
+import { validateHealthSchema, validateHealthUpdateSchema } from "../middlewares/health.middleware";
 
 
 const healthRouter = Router();
@@ -10,7 +10,7 @@ healthRouter.post('/', healthTest)
 healthRouter.post('/create',validateHealthSchema, healthCreate)
 healthRouter.get('/read', healthRead)
 healthRouter.get('/read/:email', healthReadByEmail)
-healthRouter.put('update',validateHealthSchema, healthUpdate)
+healthRouter.put('update',validateHealthUpdateSchema, healthUpdate)
 healthRouter.delete('/delete', healthDelete)
 
 export default healthRouter;
