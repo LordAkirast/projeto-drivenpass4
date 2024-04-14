@@ -14,5 +14,5 @@ export const healthEmailMock = {
 
 export const usersBodyMock = {
     email: faker.internet.email(),
-    password: faker.internet.password
+    password: faker.internet.password()
 }

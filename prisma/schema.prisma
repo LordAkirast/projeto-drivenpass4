@@ -27,7 +27,7 @@ model User {
   Credential Credential[]
   Network    Network[]
 
-  @@map("users")
+ // @@map("users")
 }
 
 model Credential {
@@ -39,7 +39,7 @@ model Credential {
   password String
   userId Int
 
-  @@map("credentials")
+ // @@map("credentials")
 }
 
 model Network {
@@ -50,5 +50,5 @@ model Network {
   password String
   userId   Int
 
-  @@map("networks")
+ // @@map("networks")
 }

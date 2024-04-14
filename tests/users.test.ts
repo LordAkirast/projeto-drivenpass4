@@ -3,15 +3,23 @@ import supertest from 'supertest'
 import { PrismaClient } from '@prisma/client'
 import { usersBodyMock } from './mocks/mockCreate';
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
-beforeAll(async () => {
-    await prisma.$executeRaw`TRUNCATE TABLE "Test" RESTART IDENTITY` //it will resets ids from test to 1
-})
+  beforeAll(async () => {
+    try {
+        await prisma.$executeRaw`TRUNCATE TABLE "User" RESTART IDENTITY CASCADE`;
+    } catch (error) {
+        console.error('Erro ao truncar tabelas:', error);
+    }
+});
 
 afterAll(async () => {
-    await prisma.$executeRaw`TRUNCATE TABLE "Test" RESTART IDENTITY` //it will resets ids from test to 1
-})
+    try {
+        await prisma.$executeRaw`TRUNCATE TABLE "User" RESTART IDENTITY CASCADE`;
+    } catch (error) {
+        console.error('Erro ao truncar tabelas:', error);
+    }
+});
 
 
 describe('/POST Create - Users', () => {
@@ -24,7 +32,7 @@ describe('/POST Create - Users', () => {
 
     it('Automatic Check - 001: Verify if user was created on 001', async () => {
 
-        const findCreatedUser = await prisma.test.findFirst({
+        const findCreatedUser = await prisma.user.findFirst({
             where: { id: 1 }
         })
 

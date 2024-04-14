@@ -12,14 +12,12 @@ const prisma = new PrismaClient()
 export async function createUser(req: Request, res: Response) {
     const userBody = req.body as userBodyProtocol
 
-    console.log('Verificando se userBody vem com os valores corretos: ',userBody)
 
     try {
         const verifyExistingUser = await prisma.user.findFirst({
             where: { email: userBody.email }
         })
 
-        console.log('Verificando se verifyExistingUser tem valor: ',verifyExistingUser)
 
         if (verifyExistingUser) {
             console.log('verifyExistingUser tem valor: ',verifyExistingUser)
@@ -30,7 +28,6 @@ export async function createUser(req: Request, res: Response) {
             data: userBody
         })
 
-        console.log('Em teoria, usuário foi criado: ')
 
         return res.status(201).send(operationSuccesfull.message)
     } catch (error) {
