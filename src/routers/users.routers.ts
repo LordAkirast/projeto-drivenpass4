@@ -2,10 +2,11 @@ import { Router } from "express";
 import { createUser, deleteAllUsers } from "../controllers/users.controllers";
 import express, { Express } from 'express';
 import cors from 'cors';
+import { validateUsersSchema } from "../middlewares/users.middleware";
 ////import de controllers
 
 const usersRouter = Router()
-usersRouter.post('/create', createUser)
+usersRouter.post('/create', validateUsersSchema, createUser)
 // healthRouter.post('/create', healthCreate)
 // healthRouter.get('/read', healthRead)
 // healthRouter.get('/read/:email', healthReadByEmail)
