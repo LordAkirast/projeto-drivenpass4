@@ -1,14 +1,14 @@
 import { Router } from "express";
+import { createUser, deleteAllUsers } from "../controllers/users.controllers";
 ////import de controllers
 
 const usersRouter = Router()
 
-// healthRouter.get('/ok', (_req, res) => res.send('OK!'))
-// healthRouter.post('/', healthTest)
+usersRouter.post('/create', createUser)
 // healthRouter.post('/create', healthCreate)
 // healthRouter.get('/read', healthRead)
 // healthRouter.get('/read/:email', healthReadByEmail)
 // healthRouter.put('update', healthUpdate)
-// healthRouter.delete('/delete', healthDelete)
+usersRouter.delete('/delete', deleteAllUsers)
 
 export default usersRouter;
