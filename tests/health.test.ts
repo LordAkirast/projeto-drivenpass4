@@ -1,7 +1,6 @@
 import app from '../src/app'
 import supertest from 'supertest'
 import { PrismaClient } from '@prisma/client'
-import { faker } from '@faker-js/faker';
 import { healthBodyMock, healthEmailMock } from './mocks/mockCreate';
 
 beforeAll(async () => {
