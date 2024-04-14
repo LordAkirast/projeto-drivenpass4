@@ -1,8 +1,14 @@
-type healthBodyProtocol = {
+export type healthBodyProtocol = {
     id: number;
     email: string;
     name: string;
-  }
+}
 
+export type healthEmailProtocol = {
+    email: string;
+}
 
-export default healthBodyProtocol
+export type idProtocol = {
+    id: number
+}
+

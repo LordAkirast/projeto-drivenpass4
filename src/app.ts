@@ -1,14 +1,25 @@
 import express, { Express } from 'express';
+import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
-import healthTest from './controllers/health.controllers';
+import { healthCreate, healthDelete, healthRead, healthReadByEmail, healthTest, healthUpdate, } from './controllers/health.controllers';
 
-const prisma = new      PrismaClient()
+
+
+const prisma = new PrismaClient()
 
 const app = express()
 
 app
-.use('/health', healthTest )
+    .use(cors())
+    .use(express.json())
+    .post('/health', healthTest)
+    .post('/health/create', healthCreate)
+    .get('/health/read', healthRead)
+    .get('/health/read/:email', healthReadByEmail)
+    .put('/health/update', healthUpdate)
+    .delete('/health/delete', healthDelete)
 
-app.listen(4000, () => {
-    console.log('Server is running on port 4000');
-});
+
+
+
+export default app
