@@ -5,7 +5,7 @@ import { usersBodyMock } from './mocks/mockCreate';
 
 const prisma = new PrismaClient();
 
-  beforeAll(async () => {
+beforeAll(async () => {
     try {
         await prisma.$executeRaw`TRUNCATE TABLE "User" RESTART IDENTITY CASCADE`;
     } catch (error) {
@@ -38,5 +38,19 @@ describe('/POST Create - Users', () => {
 
         expect(findCreatedUser.email).toBe(usersBodyMock.email)
 
+    })
+})
+
+describe('/POST Login - Users', () => {
+    it('001 - Login: Given a valid body, and a correct user email and password existing on the database it shall and return 200', async () => {
+
+        prisma.user.create({
+            data: usersBodyMock
+        })
+
+        const result = await supertest(app).post("/users/login").send(usersBodyMock);
+        const status = result.status;
+
+        expect(status).toBe(200)
     })
 })

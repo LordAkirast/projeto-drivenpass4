@@ -51,7 +51,7 @@ export async function loginUser(req: Request, res: Response) {
 
 
         if (verifyExistingUser) {
-            return res.status(201).send('Usuário logado!' + operationSuccesfull.message)
+            return res.status(200).send('Usuário logado!' + operationSuccesfull.message)
 
         } else {
             return res.status(401).send(unauthorizedError.message)
