@@ -1,13 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { userBodyProtocol } from "../protocols/users.protocols";
-import { EmailAlreadyExists, generalServerError } from "../middlewares/errors.middleware";
+import { EmailAlreadyExists, generalServerError, unauthorizedError } from "../middlewares/errors.middleware";
 import { operationSuccesfull } from "../middlewares/success.middleware";
 import { usersSchema } from "../schemas/users.schemas";
 
 const prisma = new PrismaClient()
 
-
+////o que eu não sei
+////como usar corretamente o throw
+///ambientes de produção
+///
 
 export async function createUser(req: Request, res: Response) {
     const userBody = req.body as userBodyProtocol
@@ -20,7 +23,7 @@ export async function createUser(req: Request, res: Response) {
 
 
         if (verifyExistingUser) {
-            console.log('verifyExistingUser tem valor: ',verifyExistingUser)
+            console.log('verifyExistingUser tem valor: ', verifyExistingUser)
             return res.status(409).send(EmailAlreadyExists.message)
         }
 
@@ -30,6 +33,30 @@ export async function createUser(req: Request, res: Response) {
 
 
         return res.status(201).send(operationSuccesfull.message)
+    } catch (error) {
+
+        return res.status(500).send(error.message)
+
+    }
+}
+
+export async function loginUser(req: Request, res: Response) {
+    const userBody = req.body as userBodyProtocol
+
+
+    try {
+        const verifyExistingUser = await prisma.user.findFirst({
+            where: { email: userBody.email }
+        })
+
+
+        if (verifyExistingUser) {
+            return res.status(201).send('Usuário logado!' + operationSuccesfull.message)
+
+        } else {
+            return res.status(401).send(unauthorizedError.message)
+        }
+
     } catch (error) {
 
         return res.status(500).send(error.message)

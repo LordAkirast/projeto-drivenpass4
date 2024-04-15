@@ -11,3 +11,9 @@ export const generalServerError = {
     message:'Erro no servidor',
     code: '500'
 }
+
+export const unauthorizedError = {
+    type: 'unauthorizedError',
+    message:'Não Autorizado',
+    code: '201'
+}
