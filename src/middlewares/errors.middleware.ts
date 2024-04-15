@@ -6,6 +6,12 @@ export const EmailAlreadyExists = {
     code: '409'
 }
 
+export const credentialAlreadyExists = {
+    type: 'credentialAlreadyExists',
+    message:'Já existe uma credencial com este nome.',
+    code: '409'
+}
+
 export const generalServerError = {
     type: 'GeneralError',
     message:'Erro no servidor',

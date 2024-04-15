@@ -10,7 +10,7 @@ const prisma = new PrismaClient()
 ////o que eu não sei
 ////como usar corretamente o throw
 ///ambientes de produção
-///
+///authorization
 
 export async function createUser(req: Request, res: Response) {
     const userBody = req.body as userBodyProtocol
