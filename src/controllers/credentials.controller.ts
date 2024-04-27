@@ -10,9 +10,11 @@ const prisma = new PrismaClient()
 export async function createCredential(req: Request, res: Response) {
     const credentialBody = req.body as credentialBodyProtocol
 
-    const authorizationHeader = req.headers.authorization;
-    if (!authorizationHeader) {
-        return res.status(401).json({ error: 'Authorization header is missing' });
+    const token = localStorage.getItem('accessToken');
+
+    // Verifica se o token está presente
+    if (!token) {
+        return res.status(401).json({ error: 'Token is missing in localStorage' });
     }
 
 
