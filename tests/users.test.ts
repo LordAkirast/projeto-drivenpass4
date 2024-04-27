@@ -1,7 +1,7 @@
 import app from '../src/app'
 import supertest from 'supertest'
 import { PrismaClient } from '@prisma/client'
-import { usersBodyMock } from './mocks/mockCreate';
+import { usersBodyMock, usersLoginBodyMock } from './mocks/mockCreate';
 
 const prisma = new PrismaClient();
 
@@ -48,9 +48,29 @@ describe('/POST Login - Users', () => {
             data: usersBodyMock
         })
 
+        const verification = prisma.user.findFirst({
+            where: { email: usersBodyMock.email, password: usersBodyMock.password }
+        })
+
+        if (!verification) {
+            throw new Error("User wasn't found on the database. The test can't continue.");
+        }
+
         const result = await supertest(app).post("/users/login").send(usersBodyMock);
         const status = result.status;
 
         expect(status).toBe(200)
+    })
+
+    it('002 - Login: Given a valid body, and an incorrect user email and password non-existing on the database it shall and return 401', async () => {
+
+        prisma.user.create({
+            data: usersBodyMock
+        })
+
+        const result = await supertest(app).post("/users/login").send(usersLoginBodyMock);
+        const status = result.status;
+
+        expect(status).toBe(401)
     })
 })

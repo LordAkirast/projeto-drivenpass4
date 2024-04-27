@@ -16,3 +16,8 @@ export const usersBodyMock = {
     email: faker.internet.email(),
     password: faker.internet.password()
 }
+
+export const usersLoginBodyMock = {
+    email: faker.internet.email(),
+    password: faker.internet.password()
+}
