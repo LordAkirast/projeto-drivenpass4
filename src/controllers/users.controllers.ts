@@ -54,6 +54,10 @@ export async function loginUser(req: Request, res: Response) {
         if (verifyExistingUser) {
             const accessToken = uuid();
 
+            localStorage.setItem('accessToken', accessToken);
+            ///isso salva o token na accessToken para pegar ele de volta tem que usar
+            ///const token = localStorage.getItem('accessToken'); ai o token é salvo em token.
+
             return res.status(200).json({ accessToken: accessToken, message: 'Usuário logado!' });
         } else {
             return res.status(401).json({ error: 'E-mail ou senha incorretos' });
