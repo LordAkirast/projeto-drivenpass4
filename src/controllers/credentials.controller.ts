@@ -10,6 +10,11 @@ const prisma = new PrismaClient()
 export async function createCredential(req: Request, res: Response) {
     const credentialBody = req.body as credentialBodyProtocol
 
+    const authorizationHeader = req.headers.authorization;
+    if (!authorizationHeader) {
+        return res.status(401).json({ error: 'Authorization header is missing' });
+    }
+
 
     try {
         const verifyExistingCredential = await prisma.credential.findFirst({

@@ -4,6 +4,7 @@ import { userBodyProtocol } from "../protocols/users.protocols";
 import { EmailAlreadyExists, generalServerError, unauthorizedError } from "../middlewares/errors.middleware";
 import { operationSuccesfull } from "../middlewares/success.middleware";
 import { usersSchema } from "../schemas/users.schemas";
+import { v4 as uuid } from 'uuid';
 
 const prisma = new PrismaClient()
 
@@ -51,10 +52,11 @@ export async function loginUser(req: Request, res: Response) {
 
 
         if (verifyExistingUser) {
-            return res.status(200).send('Usuário logado! ' + operationSuccesfull.message)
+            const accessToken = uuid();
 
+            return res.status(200).json({ accessToken: accessToken, message: 'Usuário logado!' });
         } else {
-            return res.status(401).send('Your e-mail or password is wrong: ' + unauthorizedError.message)
+            return res.status(401).json({ error: 'E-mail ou senha incorretos' });
         }
 
     } catch (error) {
