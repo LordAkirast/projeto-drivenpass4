@@ -46,15 +46,15 @@ export async function loginUser(req: Request, res: Response) {
 
     try {
         const verifyExistingUser = await prisma.user.findFirst({
-            where: { email: userBody.email }
+            where: { email: userBody.email, password: userBody.password }
         })
 
 
         if (verifyExistingUser) {
-            return res.status(200).send('Usuário logado!' + operationSuccesfull.message)
+            return res.status(200).send('Usuário logado! ' + operationSuccesfull.message)
 
         } else {
-            return res.status(401).send(unauthorizedError.message)
+            return res.status(401).send('Your e-mail or password is wrong: ' + unauthorizedError.message)
         }
 
     } catch (error) {
