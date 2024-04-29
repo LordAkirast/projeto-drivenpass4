@@ -5,6 +5,7 @@ import { EmailAlreadyExists, generalServerError, unauthorizedError } from "../mi
 import { operationSuccesfull } from "../middlewares/success.middleware";
 import { usersSchema } from "../schemas/users.schemas";
 import { v4 as uuid } from 'uuid';
+import * as ls from "local-storage";
 
 const prisma = new PrismaClient()
 
@@ -50,13 +51,20 @@ export async function loginUser(req: Request, res: Response) {
             where: { email: userBody.email, password: userBody.password }
         })
 
+        const verifyLoggedUser = await prisma.sessions.findFirst({
+            where: { email: userBody.email }
+        })
+
+        if (verifyLoggedUser) {
+            return res.status(409).send('User is already logged.')
+        }
 
         if (verifyExistingUser) {
             const accessToken = uuid();
 
-            localStorage.setItem('accessToken', accessToken);
+            ls.set<string>('accessToken',accessToken);
             ///isso salva o token na accessToken para pegar ele de volta tem que usar
-            ///const token = localStorage.getItem('accessToken'); ai o token é salvo em token.
+            ///const token = ls.get<string>('accessToken'); ai o token é salvo em token.
 
             const session = await prisma.sessions.create({
                 data: {
@@ -79,19 +87,24 @@ export async function loginUser(req: Request, res: Response) {
 }
 
 export async function logoutUser(req: Request, res: Response) {
-    const userID: number = req.body
+    const token: string = ls.get<string>('accessToken')
+
+    if (!token) {
+        return res.status(401).send('User is not logged to be able to logout.')
+    }
 
     const sessionToDelete = await prisma.sessions.findFirst({
-        where: { userId: userID }
+        where: { token: token }
     });
 
     if (sessionToDelete) {
         await prisma.sessions.delete({
             where: { id: sessionToDelete.id }
         });
+        ls.clear(); ///limpa o localStorage
         return res.status(202).send(operationSuccesfull.message)
     } else {
-        return res.status(404).send('UserID not found!')
+        return res.status(401).send('User is not logged')
     }
 
 

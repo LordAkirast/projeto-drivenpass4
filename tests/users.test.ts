@@ -2,6 +2,7 @@ import app from '../src/app'
 import supertest from 'supertest'
 import { PrismaClient } from '@prisma/client'
 import { usersBodyMock, usersLoginBodyMock } from './mocks/mockCreate';
+import * as ls from "local-storage";
 
 const prisma = new PrismaClient();
 

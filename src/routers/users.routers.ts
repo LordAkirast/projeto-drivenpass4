@@ -8,7 +8,7 @@ import { validateUsersSchema, validateUserIDSchema } from "../middlewares/users.
 const usersRouter = Router()
 usersRouter.post('/create', validateUsersSchema, createUser)
 usersRouter.post('/login', validateUsersSchema, loginUser)
-usersRouter.post('/logout', validateUserIDSchema, logoutUser)
+usersRouter.post('/logout', logoutUser)
 // healthRouter.get('/read', healthRead)
 // healthRouter.get('/read/:email', healthReadByEmail)
 // healthRouter.put('update', healthUpdate)
