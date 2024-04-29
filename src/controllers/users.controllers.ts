@@ -78,6 +78,26 @@ export async function loginUser(req: Request, res: Response) {
     }
 }
 
+export async function logoutUser(req: Request, res: Response) {
+    const userID: number = req.body
+
+    const sessionToDelete = await prisma.sessions.findFirst({
+        where: { userId: userID }
+    });
+
+    if (sessionToDelete) {
+        await prisma.sessions.delete({
+            where: { id: sessionToDelete.id }
+        });
+        return res.status(200).send(operationSuccesfull.message)
+    } else {
+        return res.status(404).send('UserID not found!')
+    }
+
+
+
+}
+
 export async function deleteAllUsers(req: Request, res: Response) {
     prisma.user.deleteMany()
     return res.status(204).send(operationSuccesfull.message)
