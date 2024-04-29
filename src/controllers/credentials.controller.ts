@@ -45,3 +45,5 @@ export async function createCredential(req: Request, res: Response) {
 ///nas credentials, temos que primeiro garantir que o userID é do usuário logado
 ///talvez salvar em localStorage?
 //alias... temos que enviar username, password title,url, username,password,userId.
+///cria uma tabela de sessions onde você vai guardar os usuários logados e o token.
+///através do token vamos pegar o userID e colocar na credential

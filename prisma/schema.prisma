@@ -13,7 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Test {
   id    Int     @id @default(autoincrement())
   email String  @unique
@@ -21,13 +20,14 @@ model Test {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  password String
+  id         Int          @id @default(autoincrement())
+  email      String       @unique
+  password   String
   Credential Credential[]
   Network    Network[]
+  Sessions   Sessions[]
 
- // @@map("users")
+  // @@map("users")
 }
 
 model Credential {
@@ -37,9 +37,9 @@ model Credential {
   url      String
   username String
   password String
-  userId Int
+  userId   Int
 
- // @@map("credentials")
+  // @@map("credentials")
 }
 
 model Network {
@@ -50,5 +50,13 @@ model Network {
   password String
   userId   Int
 
- // @@map("networks")
+  // @@map("networks")
+}
+
+model Sessions {
+  id     Int    @id @default(autoincrement())
+  user     User   @relation(fields: [userId], references: [id])
+  email  String @unique
+  token  String
+  userId Int
 }

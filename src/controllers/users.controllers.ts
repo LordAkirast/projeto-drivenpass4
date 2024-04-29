@@ -58,6 +58,14 @@ export async function loginUser(req: Request, res: Response) {
             ///isso salva o token na accessToken para pegar ele de volta tem que usar
             ///const token = localStorage.getItem('accessToken'); ai o token é salvo em token.
 
+            const session = await prisma.sessions.create({
+                data: {
+                    email: verifyExistingUser.email,
+                    token: accessToken,
+                    userId: verifyExistingUser.id
+                }
+            });
+
             return res.status(200).json({ accessToken: accessToken, message: 'Usuário logado!' });
         } else {
             return res.status(401).json({ error: 'E-mail ou senha incorretos' });
