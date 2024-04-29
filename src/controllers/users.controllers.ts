@@ -89,7 +89,7 @@ export async function logoutUser(req: Request, res: Response) {
         await prisma.sessions.delete({
             where: { id: sessionToDelete.id }
         });
-        return res.status(200).send(operationSuccesfull.message)
+        return res.status(202).send(operationSuccesfull.message)
     } else {
         return res.status(404).send('UserID not found!')
     }

@@ -21,3 +21,7 @@ export const usersLoginBodyMock = {
     email: faker.internet.email(),
     password: faker.internet.password()
 }
+
+export const usersLogoutBodyMock = {
+    userID: 1
+}
