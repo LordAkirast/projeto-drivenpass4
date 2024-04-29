@@ -54,7 +54,7 @@ describe('/POST Login - Users', () => {
         })
 
         const verificationSessions = prisma.sessions.findFirst({
-            where: { email: usersBodyMock.email}
+            where: { email: usersBodyMock.email }
         })
 
         if (!verification) {
@@ -82,11 +82,19 @@ describe('/POST Login - Users', () => {
 
         expect(status).toBe(401)
     })
-    
+
 })
 
 describe('/POST Logout - Users', () => {
-    it('001 - Logout: Given a valid userID from an user that exists on the sessions table it shall delete the user from sessions and return 202', async () => {
+    it('001 - Logout: Given a valid token automatically generated and gotten from the localStorage from an user that exists on the sessions table it shall delete the user from sessions and return 202', async () => {
+
+        await prisma.sessions.deleteMany({
+            where: {} 
+        });
+
+        await prisma.user.deleteMany({
+            where: {}
+          });
 
         await prisma.user.create({
             data: usersBodyMock
@@ -96,38 +104,32 @@ describe('/POST Logout - Users', () => {
             where: { email: usersBodyMock.email, password: usersBodyMock.password }
         })
 
-        const verificationSessions = await prisma.sessions.findFirst({
-            where: { email: usersBodyMock.email}
-        })
-
         if (!verification) {
             throw new Error("User wasn't found on the database. The test can't continue.");
         }
+
+        await prisma.sessions.create({
+            data: {
+                email: usersBodyMock.email,
+                token: 'testlogout',
+                userId: verification.id
+            } 
+        })
+
+        const verificationSessions = await prisma.sessions.findFirst({
+            where: { email: usersBodyMock.email }
+        })
 
         if (!verificationSessions) {
             throw new Error("User session was not found. The test can't continue.");
         }
 
-        const userLogoutData = {
-            userID: verificationSessions.userId
-        }
+        ls.set<string>('accessToken', 'testlogout')
 
-        const result = await supertest(app).post("/users/logout").send(userLogoutData);
+        const result = await supertest(app).post("/users/logout").send();
         const status = result.status;
 
         expect(status).toBe(202)
     })
 
-    it('002 - Login: Given a valid body, and an incorrect user email and password non-existing on the database it shall and return 401', async () => {
-
-        prisma.user.create({
-            data: usersBodyMock
-        })
-
-        const result = await supertest(app).post("/users/login").send(usersLoginBodyMock);
-        const status = result.status;
-
-        expect(status).toBe(401)
-    })
-    
 })
