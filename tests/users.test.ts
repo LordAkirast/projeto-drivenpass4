@@ -42,7 +42,7 @@ describe('/POST Create - Users', () => {
 })
 
 describe('/POST Login - Users', () => {
-    it('001 - Login: Given a valid body, and a correct user email and password existing on the database it shall and return 200', async () => {
+    it('001 - Login: Given a valid body, and a correct user email and password existing on the database it shall create a data on user session and return 200', async () => {
 
         prisma.user.create({
             data: usersBodyMock
