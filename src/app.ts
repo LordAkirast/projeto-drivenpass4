@@ -4,6 +4,7 @@ import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import healthRouter from './routers/health.routers';
 import usersRouter from './routers/users.routers';
+import credentialRouter from './routers/credential.routers';
 import { validateHealthSchema } from './middlewares/health.middleware';
 
 
@@ -19,6 +20,7 @@ app
     .use(express.json())
     .use('/health', healthRouter)
     .use('/users', usersRouter)
+    .use('/credential', credentialRouter)
 
 
 

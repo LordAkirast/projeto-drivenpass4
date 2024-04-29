@@ -13,7 +13,7 @@ export async function createCredential(req: Request, res: Response) {
 
     const token = ls.get<string>('accessToken');
 
-    // Verifica se o token está presente
+   
     if (!token) {
         return res.status(401).json({ error: 'Token is missing in localStorage' });
     }
@@ -26,7 +26,7 @@ export async function createCredential(req: Request, res: Response) {
 
         const credentialData = {
             ...credentialBody,
-            userId: userData.userId // Adiciona o userId obtido da sessão
+            userId: userData.userId 
         };
 
         const verifyExistingCredential = await prisma.credential.findFirst({
