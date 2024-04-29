@@ -52,8 +52,16 @@ describe('/POST Login - Users', () => {
             where: { email: usersBodyMock.email, password: usersBodyMock.password }
         })
 
+        const verificationSessions = prisma.sessions.findFirst({
+            where: { email: usersBodyMock.email}
+        })
+
         if (!verification) {
             throw new Error("User wasn't found on the database. The test can't continue.");
+        }
+
+        if (!verificationSessions) {
+            throw new Error("User session was not found. The test can't continue.");
         }
 
         const result = await supertest(app).post("/users/login").send(usersBodyMock);
