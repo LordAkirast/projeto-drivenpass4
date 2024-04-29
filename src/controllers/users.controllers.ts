@@ -6,6 +6,7 @@ import { operationSuccesfull } from "../middlewares/success.middleware";
 import { usersSchema } from "../schemas/users.schemas";
 import { v4 as uuid } from 'uuid';
 import * as ls from "local-storage";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient()
 
@@ -16,6 +17,7 @@ const prisma = new PrismaClient()
 
 export async function createUser(req: Request, res: Response) {
     const userBody = req.body as userBodyProtocol
+
 
 
     try {
@@ -29,9 +31,16 @@ export async function createUser(req: Request, res: Response) {
             return res.status(409).send(EmailAlreadyExists.message)
         }
 
+        const hashedPassword = await bcrypt.hash(userBody.password, 10);
+
         await prisma.user.create({
-            data: userBody
-        })
+            data: {
+                email: userBody.email,
+                password: hashedPassword
+            }
+        });
+
+        console.log(hashedPassword)
 
 
         return res.status(201).send(operationSuccesfull.message)
@@ -47,9 +56,21 @@ export async function loginUser(req: Request, res: Response) {
 
 
     try {
+
         const verifyExistingUser = await prisma.user.findFirst({
-            where: { email: userBody.email, password: userBody.password }
+            where: { email: userBody.email }
         })
+
+        if (!verifyExistingUser) {
+            return res.status(401).send('E-mail ou senha incorretos');
+        }
+
+        // Compara a senha fornecida com a senha hash armazenada no banco de dados
+        const passwordMatch = await bcrypt.compare(userBody.password, verifyExistingUser.password);
+
+        if (!passwordMatch) {
+            return res.status(401).send('E-mail ou senha incorretos');
+        }
 
         const verifyLoggedUser = await prisma.sessions.findFirst({
             where: { email: userBody.email }
@@ -62,7 +83,7 @@ export async function loginUser(req: Request, res: Response) {
         if (verifyExistingUser) {
             const accessToken = uuid();
 
-            ls.set<string>('accessToken',accessToken);
+            ls.set<string>('accessToken', accessToken);
             ///isso salva o token na accessToken para pegar ele de volta tem que usar
             ///const token = ls.get<string>('accessToken'); ai o token é salvo em token.
 
