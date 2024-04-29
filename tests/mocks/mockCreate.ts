@@ -25,3 +25,10 @@ export const usersLoginBodyMock = {
 export const usersLogoutBodyMock = {
     userID: 1
 }
+
+export const credentialBodyMock = {
+    title: faker.lorem.word(),
+    url: faker.internet.url(),
+    username: faker.internet.userName(),
+    password: faker.internet.password(),
+}

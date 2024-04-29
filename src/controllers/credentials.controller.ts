@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { credentialBodyProtocol } from "../protocols/credentials.protocols";
 import { credentialAlreadyExists } from "../middlewares/errors.middleware";
 import { operationSuccesfull } from "../middlewares/success.middleware";
+import * as ls from "local-storage";
 
 const prisma = new PrismaClient()
 
@@ -10,17 +11,26 @@ const prisma = new PrismaClient()
 export async function createCredential(req: Request, res: Response) {
     const credentialBody = req.body as credentialBodyProtocol
 
-    const token = localStorage.getItem('accessToken');
+    const token = ls.get<string>('accessToken');
 
     // Verifica se o token está presente
     if (!token) {
         return res.status(401).json({ error: 'Token is missing in localStorage' });
     }
 
+    const userData = await prisma.sessions.findFirst({
+        where: {token: token}
+    })
 
     try {
+
+        const credentialData = {
+            ...credentialBody,
+            userId: userData.userId // Adiciona o userId obtido da sessão
+        };
+
         const verifyExistingCredential = await prisma.credential.findFirst({
-            where: { title: credentialBody.title }
+            where: { title: credentialBody.title, userId: userData.userId  }
         })
 
 
@@ -29,7 +39,7 @@ export async function createCredential(req: Request, res: Response) {
         }
 
         await prisma.credential.create({
-            data: credentialBody
+            data: credentialData
         })
 
 
