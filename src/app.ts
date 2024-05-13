@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import healthRouter from './routers/health.routers';
 import usersRouter from './routers/users.routers';
 import credentialRouter from './routers/credential.routers';
+import networkRouter from './routers/network.routers';
 import { validateHealthSchema } from './middlewares/health.middleware';
 
 
@@ -21,6 +22,7 @@ app
     .use('/health', healthRouter)
     .use('/users', usersRouter)
     .use('/credential', credentialRouter)
+    .use('/network', networkRouter)
 
 
 
