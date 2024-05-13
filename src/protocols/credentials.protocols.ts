@@ -3,5 +3,4 @@ export type credentialBodyProtocol = {
     url: string,
     username: string,
     password: string,
-    userId: number
 }

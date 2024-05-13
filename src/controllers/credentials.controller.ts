@@ -51,9 +51,30 @@ export async function createCredential(req: Request, res: Response) {
     }
 }
 
+export async function getCredentials(req: Request, res: Response) {
 
-///nas credentials, temos que primeiro garantir que o userID é do usuário logado
-///talvez salvar em localStorage?
-//alias... temos que enviar username, password title,url, username,password,userId.
-///cria uma tabela de sessions onde você vai guardar os usuários logados e o token.
-///através do token vamos pegar o userID e colocar na credential
+    const token = ls.get<string>('accessToken');
+
+   
+    if (!token) {
+        return res.status(401).json({ error: 'Token is missing in localStorage' });
+    }
+
+    const userData = await prisma.sessions.findFirst({
+        where: {token: token}
+    })
+
+    const myCredentials = await prisma.credential.findMany({
+        where: {userId: userData.userId}
+    })
+
+    try {
+
+        return res.status(200).send(myCredentials)
+    } catch (error) {
+
+        return res.status(500).send(error.message)
+
+    }
+}
+
