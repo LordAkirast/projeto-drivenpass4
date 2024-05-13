@@ -145,7 +145,6 @@ describe('/GET Read - Credentials', () => {
         const result2 = await supertest(app).get("/credential/read");
         const status2 = result2.status;
 
-        console.log(result2)
 
         const findCreatedCredential = await prisma.credential.findMany({
             where: { userId: verification.id }

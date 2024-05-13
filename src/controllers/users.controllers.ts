@@ -7,6 +7,7 @@ import { usersSchema } from "../schemas/users.schemas";
 import { v4 as uuid } from 'uuid';
 import * as ls from "local-storage";
 import bcrypt from "bcrypt";
+import { getCredentials } from "./credentials.controller";
 
 const prisma = new PrismaClient()
 

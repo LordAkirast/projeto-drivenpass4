@@ -59,7 +59,7 @@ describe('/GET Read', () => {
         })
 
         const result = await supertest(app).get(`/health/read/${healthBodyMock.email}`);
-        console.log(`/health/read/:${healthBodyMock.email}`)
+        //console.log(`/health/read/:${healthBodyMock.email}`)
         const status = result.status
 
         expect(status).toBe(200)
