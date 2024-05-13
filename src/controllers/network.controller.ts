@@ -104,3 +104,47 @@ export async function getNetworkById(req: Request, res: Response) {
     }
 }
 
+export async function deleteNetworkById(req: Request, res: Response) {
+    try {
+        
+        const token = ls.get<string>('accessToken');
+
+       
+        if (!token) {
+            return res.status(401).json({ error: 'Token is missing in localStorage' });
+        }
+
+      
+        const userData = await prisma.sessions.findFirst({
+            where: { token: token }
+        });
+
+        
+        if (!userData) {
+            return res.status(401).json({ error: 'User session not found' });
+        }
+
+        
+        const { id } = req.params;
+
+        
+        const deleteTry = await prisma.network.delete({
+            where: { id: Number(id), userId: userData.userId }
+        });
+
+        if(!deleteTry) {
+            return res.status(409).send('This network does not belongs to you.')
+        }
+
+        
+        return res.status(204).send(operationSuccesfull);
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
+}
+
+export async function deleteAllNetworks(req: Request, res: Response) {
+    prisma.network.deleteMany()
+    return res.status(204).send(operationSuccesfull.message)
+}
+
