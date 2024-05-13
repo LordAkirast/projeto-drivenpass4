@@ -8,7 +8,7 @@ import { createCredential, getCredentials } from "../controllers/credentials.con
 
 const credentialRouter = Router()
 credentialRouter.post('/create', createCredential)
-credentialRouter.get('/get', getCredentials)
+credentialRouter.get('/read', getCredentials)
 //credentialRouter.post('/login', validateUsersSchema, loginUser)
 //credentialRouter.post('/logout', logoutUser)
 //credentialRouter.delete('/delete', deleteAllUsers)
