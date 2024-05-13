@@ -41,7 +41,7 @@ export async function createUser(req: Request, res: Response) {
             }
         });
 
-        console.log(hashedPassword)
+       // console.log(hashedPassword)
 
 
         return res.status(201).send(operationSuccesfull.message)

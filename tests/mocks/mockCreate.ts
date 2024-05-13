@@ -32,3 +32,9 @@ export const credentialBodyMock = {
     username: faker.internet.userName(),
     password: faker.internet.password(),
 }
+
+export const networkBodyMock = {
+    title: faker.lorem.word(),
+    network: faker.internet.domainName(),
+    password: faker.internet.password(),
+}
