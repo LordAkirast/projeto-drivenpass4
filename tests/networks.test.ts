@@ -1,7 +1,7 @@
 import app from '../src/app'
 import supertest from 'supertest'
 import { PrismaClient } from '@prisma/client'
-import { networkBodyMock, usersBodyMock } from './mocks/mockCreate';
+import { networkBodyMock, usersBodyMock, networkBodyMockObj } from './mocks/mockCreate';
 import * as ls from "local-storage";
 
 const prisma = new PrismaClient();
@@ -38,35 +38,31 @@ describe('/POST Create - Network', () => {
             data: usersBodyMock
         })
 
-        const verification = await prisma.user.findFirst({
+        const userData = await prisma.user.findFirst({
             where: { email: usersBodyMock.email, password: usersBodyMock.password }
         })
 
-        if (!verification) {
-            throw new Error("User wasn't found on the database. The test can't continue.");
-        }
+        // if (!verification) {
+        //     throw new Error("User wasn't found on the database. The test can't continue.");
+        // }
 
-        await prisma.sessions.create({
-            data: {
-                email: usersBodyMock.email,
-                token: 'testlogout',
-                userId: verification.id
-            } 
+
+        ////isso no get de network
+        await prisma.network.create({
+            data: networkBodyMock(userData.id)
         })
 
-        const verificationSessions = await prisma.sessions.findFirst({
-            where: { email: usersBodyMock.email }
-        })
+        // const verificationSessions = await prisma.sessions.findFirst({
+        //     where: { email: usersBodyMock.email }
+        // })
 
-        if (!verificationSessions) {
-            throw new Error("User session was not found. The test can't continue.");
-        }
+        // if (!verificationSessions) {
+        //     throw new Error("User session was not found. The test can't continue.");
+        // }
 
         ls.set<string>('accessToken', 'testlogout')
 
-
-
-        const result = await supertest(app).post('/network/create').send(networkBodyMock);
+        const result = await supertest(app).post('/network/create').send(networkBodyMockObj);
         expect(result.status).toBe(201);
     });
 
@@ -174,14 +170,17 @@ describe('/GET Read - Network', () => {
 
 
 ///não sei como fazer para criar uma network e vincular dados do UserID ou algo assim para validar que é do mesmo cara
-// describe('/GET Read NetworkById', () => {
-//     it('001 - Read: should return a specific network with valid token and ID and status 200', async () => {
-//         ls.set<string>('accessToken', 'validToken');
+describe('/GET Read NetworkById', () => {
 
-//         const validNetworkId = 1;
 
-//         const result = await supertest(app).get(`/network/${validNetworkId}`);
-//         expect(result.status).toBe(200);
-//     });
 
-// });
+    it('001 - Read: should return a specific network with valid token and ID and status 200', async () => {
+        ls.set<string>('accessToken', 'validToken');
+
+        const validNetworkId = 1;
+
+        const result = await supertest(app).get(`/network/${validNetworkId}`);
+        expect(result.status).toBe(200);
+    });
+
+});

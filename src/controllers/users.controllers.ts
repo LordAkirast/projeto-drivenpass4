@@ -15,6 +15,7 @@ const prisma = new PrismaClient()
 ////como usar corretamente o throw
 ///ambientes de produção
 ///authorization
+///separar em services e repositories
 
 export async function createUser(req: Request, res: Response) {
     const userBody = req.body as userBodyProtocol
@@ -52,8 +53,12 @@ export async function createUser(req: Request, res: Response) {
     }
 }
 
-export async function loginUser(req: Request, res: Response) {
+export async function loginUser(req: Request, res: Response,) {
     const userBody = req.body as userBodyProtocol
+    const {authorization} = req.headers
+    ////verifica na sessions se o token existe la
+    /// quando fazer o middleware, depois da requisição na session para pegar o token
+    /// no middleware colocar req.banana e ai dá de retornar isso no login por exemplo token: req.banana
 
 
     try {
