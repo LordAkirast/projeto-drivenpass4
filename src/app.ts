@@ -7,6 +7,7 @@ import usersRouter from './routers/users.routers';
 import credentialRouter from './routers/credential.routers';
 import networkRouter from './routers/network.routers';
 import { validateHealthSchema } from './middlewares/health.middleware';
+import { authenticationValidation } from './middlewares/authentication.middleware';
 
 
 const prisma = new PrismaClient()
@@ -19,7 +20,7 @@ const app = express()
 app
     .use(cors())
     .use(express.json())
-    .use('/health', healthRouter)
+    .use('/health',authenticationValidation, healthRouter)
     .use('/users', usersRouter)
     .use('/credential', credentialRouter)
     .use('/network', networkRouter)
