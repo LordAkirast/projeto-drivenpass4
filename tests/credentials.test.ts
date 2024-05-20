@@ -46,7 +46,7 @@ describe('/POST Create - Credentials', () => {
             throw new Error("User wasn't found on the database. The test can't continue.");
         }
 
-        await prisma.sessions.create({
+       const userSession = await prisma.sessions.create({
             data: {
                 email: usersBodyMock.email,
                 token: 'testlogout',
@@ -62,9 +62,9 @@ describe('/POST Create - Credentials', () => {
             throw new Error("User session was not found. The test can't continue.");
         }
 
-        ls.set<string>('accessToken', 'testlogout')
+        const token = userSession.token
 
-        const result = await supertest(app).post("/credential/create").send(credentialBodyMock);
+        const result = await supertest(app).post("/credential/create").set('Authorization', `Bearer ${token}`).send(credentialBodyMock);
         const status = result.status;
 
         const findCreatedCredential = await prisma.credential.findFirst({
@@ -106,7 +106,7 @@ describe('/GET Read - Credentials', () => {
             throw new Error("User wasn't found on the database. The test can't continue.");
         }
 
-        await prisma.sessions.create({
+        const userSession = await prisma.sessions.create({
             data: {
                 email: usersBodyMock.email,
                 token: 'testlogout',
@@ -122,7 +122,7 @@ describe('/GET Read - Credentials', () => {
             throw new Error("User session was not found. The test can't continue.");
         }
 
-        ls.set<string>('accessToken', 'testlogout')
+        const token = userSession.token
 
 
         ////aqui deu erro e não sei porqu. Mas não sei como criar user e fazer relação com outra tabela
@@ -139,10 +139,10 @@ describe('/GET Read - Credentials', () => {
 
         
 
-        const result = await supertest(app).post("/credential/create").send(credentialBodyMock);
+        const result = await supertest(app).post("/credential/create").set('Authorization', `Bearer ${token}`).send(credentialBodyMock);
         const status = result.status;
 
-        const result2 = await supertest(app).get("/credential/read");
+        const result2 = await supertest(app).set('Authorization', `Bearer ${token}`).get("/credential/read");
         const status2 = result2.status;
 
 

@@ -126,7 +126,6 @@ describe('/POST Logout - Users', () => {
         }
 
         const token = 'testlogout';
-        console.log('toookeeen', token)
 
         const result = await supertest(app).post("/users/logout").set('Authorization', `Bearer ${token}`).send();
         const status = result.status;
