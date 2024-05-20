@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { healthCreate, healthDelete, healthRead, healthReadByEmail, healthTest, healthUpdate } from "../controllers/health.controllers";
 import { validateHealthSchema, validateHealthUpdateSchema } from "../middlewares/health.middleware";
-
+import { authenticationValidation } from "../middlewares/authentication.middleware";
 
 const healthRouter = Router();
 
