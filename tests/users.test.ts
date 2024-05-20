@@ -69,6 +69,7 @@ describe('/POST Login - Users', () => {
         const status = result.status;
 
         expect(status).toBe(200)
+        
     })
 
     it('002 - Login: Given a valid body, and an incorrect user email and password non-existing on the database it shall and return 401', async () => {
@@ -89,12 +90,12 @@ describe('/POST Logout - Users', () => {
     it('001 - Logout: Given a valid token automatically generated and gotten from the localStorage from an user that exists on the sessions table it shall delete the user from sessions and return 202', async () => {
 
         await prisma.sessions.deleteMany({
-            where: {} 
+            where: {}
         });
 
         await prisma.user.deleteMany({
             where: {}
-          });
+        });
 
         await prisma.user.create({
             data: usersBodyMock
@@ -113,7 +114,7 @@ describe('/POST Logout - Users', () => {
                 email: usersBodyMock.email,
                 token: 'testlogout',
                 userId: verification.id
-            } 
+            }
         })
 
         const verificationSessions = await prisma.sessions.findFirst({
@@ -124,12 +125,16 @@ describe('/POST Logout - Users', () => {
             throw new Error("User session was not found. The test can't continue.");
         }
 
-        ls.set<string>('accessToken', 'testlogout')
+        const token = 'testlogout';
+        console.log('toookeeen', token)
 
-        const result = await supertest(app).post("/users/logout").send();
+        const result = await supertest(app).post("/users/logout").set('Authorization', `Bearer ${token}`).send();
         const status = result.status;
 
         expect(status).toBe(202)
+            
+
+        
     })
 
 })

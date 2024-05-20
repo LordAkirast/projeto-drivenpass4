@@ -12,7 +12,7 @@ export async function createCredential(req: Request, res: Response) {
     const credentialBody = req.body as credentialBodyProtocol
     const { authorization } = req.headers
 
-    const userToken = authorization.split('')[1]
+    const userToken = authorization.split(' ')[1]
 
     const userData = await prisma.sessions.findFirst({
         where: { token: userToken }
@@ -54,7 +54,7 @@ export async function createCredential(req: Request, res: Response) {
 export async function getCredentials(req: Request, res: Response) {
     const { authorization } = req.headers
 
-    const userToken = authorization.split('')[1]
+    const userToken = authorization.split(' ')[1]
 
     
 

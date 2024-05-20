@@ -8,7 +8,7 @@ import { authenticationValidation } from "../middlewares/authentication.middlewa
 
 const usersRouter = Router()
 usersRouter.post('/create', validateUsersSchema, createUser)
-usersRouter.post('/login', authenticationValidation, validateUsersSchema, loginUser)
+usersRouter.post('/login', validateUsersSchema, loginUser)
 usersRouter.post('/logout', authenticationValidation, logoutUser)
 usersRouter.delete('/delete', deleteAllUsers)
 

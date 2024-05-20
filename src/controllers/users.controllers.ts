@@ -101,10 +101,10 @@ export async function loginUser(req: Request, res: Response,) {
 }
 
 export async function logoutUser(req: Request, res: Response) {
-
+    ////não sei como não precisar repetir
     const { authorization } = req.headers
 
-    const userToken = authorization.split('')[1]
+    const userToken = authorization.split(' ')[1]
 
     const userData = await prisma.sessions.findFirst({
         where: { token: userToken }
