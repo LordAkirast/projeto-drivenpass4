@@ -42,9 +42,13 @@ describe('/POST Create - Network', () => {
             where: { email: usersBodyMock.email, password: usersBodyMock.password }
         })
 
-        // if (!verification) {
-        //     throw new Error("User wasn't found on the database. The test can't continue.");
-        // }
+        const userSession = await prisma.sessions.create({
+            data: {
+                email: usersBodyMock.email,
+                token: 'testlogout',
+                userId: userData.id
+            } 
+        })
 
 
         ////isso no get de network
@@ -52,22 +56,14 @@ describe('/POST Create - Network', () => {
             data: networkBodyMock(userData.id)
         })
 
-        // const verificationSessions = await prisma.sessions.findFirst({
-        //     where: { email: usersBodyMock.email }
-        // })
 
-        // if (!verificationSessions) {
-        //     throw new Error("User session was not found. The test can't continue.");
-        // }
+        const token = userSession.token
 
-        ls.set<string>('accessToken', 'testlogout')
-
-        const result = await supertest(app).post('/network/create').send(networkBodyMockObj);
+        const result = await supertest(app).post('/network/create').set('Authorization', `Bearer ${token}`).send(networkBodyMockObj);
         expect(result.status).toBe(201);
     });
 
     it('002 - Create: should return status 401 if token is missing', async () => {
-        ls.clear();
 
         await prisma.sessions.deleteMany({
             where: {} 
@@ -108,7 +104,9 @@ describe('/POST Create - Network', () => {
             throw new Error("User session was not found. The test can't continue.");
         }
 
-        const result = await supertest(app).post('/network/create').send(networkBodyMock);
+        const token = ''
+
+        const result = await supertest(app).post('/network/create').set('Authorization', `Bearer ${token}`).send(networkBodyMockObj);
         expect(result.status).toBe(401);
     });
 
@@ -137,7 +135,7 @@ describe('/GET Read - Network', () => {
             throw new Error("User wasn't found on the database. The test can't continue.");
         }
 
-        await prisma.sessions.create({
+        const userSession = await prisma.sessions.create({
             data: {
                 email: usersBodyMock.email,
                 token: 'testlogout',
@@ -153,14 +151,13 @@ describe('/GET Read - Network', () => {
             throw new Error("User session was not found. The test can't continue.");
         }
 
-        ls.set<string>('accessToken', 'testlogout')
+        const token = userSession.token
 
-        const result = await supertest(app).get('/network/read');
+        const result = await supertest(app).get('/network/read').set('Authorization', `Bearer ${token}`);
         expect(result.status).toBe(200);
     });
 
     it('002 - Read: should return status 401 if token is missing', async () => {
-        ls.clear();
 
         const result = await supertest(app).get('/network/read');
         expect(result.status).toBe(401);
@@ -175,11 +172,68 @@ describe('/GET Read NetworkById', () => {
 
 
     it('001 - Read: should return a specific network with valid token and ID and status 200', async () => {
-        ls.set<string>('accessToken', 'validToken');
+        await prisma.sessions.deleteMany({
+            where: {} 
+        });
 
-        const validNetworkId = 1;
+        await prisma.user.deleteMany({
+            where: {}
+          });
 
-        const result = await supertest(app).get(`/network/${validNetworkId}`);
+          await prisma.network.deleteMany({
+            where: {}
+          });
+
+        await prisma.user.create({
+            data: usersBodyMock
+        })
+
+        const verification = await prisma.user.findFirst({
+            where: { email: usersBodyMock.email, password: usersBodyMock.password }
+        })
+
+        if (!verification) {
+            throw new Error("User wasn't found on the database. The test can't continue.");
+        }
+
+        const userSession = await prisma.sessions.create({
+            data: {
+                email: usersBodyMock.email,
+                token: 'testlogout',
+                userId: verification.id
+            } 
+        })
+
+        const verificationSessions = await prisma.sessions.findFirst({
+            where: { email: usersBodyMock.email }
+        })
+
+        if (!verificationSessions) {
+            throw new Error("User session was not found. The test can't continue.");
+        }
+
+        const token = userSession.token
+
+        
+
+        const networkData = await prisma.network.create({
+            data: {
+                title: networkBodyMockObj.title,
+                network: networkBodyMockObj.network,
+                password: networkBodyMockObj.password,
+                userId: userSession.userId
+            } 
+        })
+
+        const verifyNetworkCreation = await prisma.network.findFirst({
+            where: {id: networkData.id}
+        })
+
+
+        const validNetworkId = networkData.id;
+
+
+        const result = await supertest(app).get(`/network/read/${validNetworkId}`).set('Authorization', `Bearer ${token}`);
         expect(result.status).toBe(200);
     });
 
