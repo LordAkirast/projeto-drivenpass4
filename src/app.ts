@@ -23,7 +23,7 @@ app
     .use('/health',authenticationValidation, healthRouter)
     .use('/users', usersRouter)
     .use('/credential',authenticationValidation, credentialRouter)
-    .use('/network', networkRouter)
+    .use('/network',authenticationValidation, networkRouter)
 
 
 

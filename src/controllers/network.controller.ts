@@ -10,17 +10,17 @@ const prisma = new PrismaClient()
 
 export async function createNetwork(req: Request, res: Response) {
     const networkBody = req.body as networkBodyProtocol
+    const {authorization} = req.headers
 
-    const token = ls.get<string>('accessToken');
-
-   
-    if (!token) {
-        return res.status(401).json({ error: 'Token is missing in localStorage' });
-    }
+    const userToken = authorization.split('')[1]
 
     const userData = await prisma.sessions.findFirst({
-        where: {token: token}
+        where: {token: userToken}
     })
+
+    if (!userData) {
+        return res.status(401).json({error: 'Token not found on sessions.'})
+    }
 
     try {
 
@@ -45,16 +45,18 @@ export async function createNetwork(req: Request, res: Response) {
 
 export async function getNetwork(req: Request, res: Response) {
 
-    const token = ls.get<string>('accessToken');
+    const {authorization} = req.headers
 
-   
-    if (!token) {
-        return res.status(401).json({ error: 'Token is missing in localStorage' });
-    }
+    const userToken = authorization.split('')[1]
 
     const userData = await prisma.sessions.findFirst({
-        where: {token: token}
+        where: {token: userToken}
     })
+
+    if (!userData) {
+        return res.status(401).json({error: 'Token not found on sessions.'})
+    }
+
 
     const myNetworks = await prisma.network.findMany({
         where: {userId: userData.userId}
@@ -73,18 +75,16 @@ export async function getNetwork(req: Request, res: Response) {
 export async function getNetworkById(req: Request, res: Response) {
     try {
        
-        const token = ls.get<string>('accessToken');
+        const {authorization} = req.headers
 
-        if (!token) {
-            return res.status(401).json({ error: 'Token is missing in localStorage' });
-        }
-
+        const userToken = authorization.split('')[1]
+    
         const userData = await prisma.sessions.findFirst({
-            where: { token: token }
-        });
-
+            where: {token: userToken}
+        })
+    
         if (!userData) {
-            return res.status(401).json({ error: 'User session not found' });
+            return res.status(401).json({error: 'Token not found on sessions.'})
         }
 
         const { id } = req.params;
@@ -93,7 +93,6 @@ export async function getNetworkById(req: Request, res: Response) {
             where: { id: Number(id), userId: userData.userId }
         });
 
-        // Verifica se a rede foi encontrada
         if (!network) {
             return res.status(404).json({ error: 'Network not found' });
         }
@@ -106,20 +105,15 @@ export async function getNetworkById(req: Request, res: Response) {
 
 export async function deleteNetworkById(req: Request, res: Response) {
     try {
-        
-        const token = ls.get<string>('accessToken');
+        const {authorization} = req.headers
 
-       
-        if (!token) {
-            return res.status(401).json({ error: 'Token is missing in localStorage' });
-        }
-
-      
+        const userToken = authorization.split('')[1]
+    
         const userData = await prisma.sessions.findFirst({
-            where: { token: token }
-        });
+            where: {token: userToken}
+        })
 
-        
+
         if (!userData) {
             return res.status(401).json({ error: 'User session not found' });
         }
