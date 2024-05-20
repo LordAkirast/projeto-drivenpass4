@@ -18,6 +18,10 @@ export async function createCredential(req: Request, res: Response) {
         where: { token: userToken }
     })
 
+    if (!userData) {
+        return res.status(401).json({error: 'Token not found on sessions.'})
+    }
+
     try {
 
         const credentialData = {
@@ -57,6 +61,10 @@ export async function getCredentials(req: Request, res: Response) {
     const userData = await prisma.sessions.findFirst({
         where: { token: userToken }
     })
+
+    if (!userData) {
+        return res.status(401).json({error: 'Token not found on sessions.'})
+    }
 
     const myCredentials = await prisma.credential.findMany({
         where: { userId: userData.userId }
