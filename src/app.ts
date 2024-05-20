@@ -22,7 +22,7 @@ app
     .use(express.json())
     .use('/health',authenticationValidation, healthRouter)
     .use('/users', usersRouter)
-    .use('/credential', credentialRouter)
+    .use('/credential',authenticationValidation, credentialRouter)
     .use('/network', networkRouter)
 
 

@@ -10,27 +10,23 @@ const prisma = new PrismaClient()
 
 export async function createCredential(req: Request, res: Response) {
     const credentialBody = req.body as credentialBodyProtocol
+    const { authorization } = req.headers
 
-    const token = ls.get<string>('accessToken');
-
-   
-    if (!token) {
-        return res.status(401).json({ error: 'Token is missing in localStorage' });
-    }
+    const userToken = authorization.split('')[1]
 
     const userData = await prisma.sessions.findFirst({
-        where: {token: token}
+        where: { token: userToken }
     })
 
     try {
 
         const credentialData = {
             ...credentialBody,
-            userId: userData.userId 
+            userId: userData.userId
         };
 
         const verifyExistingCredential = await prisma.credential.findFirst({
-            where: { title: credentialBody.title, userId: userData.userId  }
+            where: { title: credentialBody.title, userId: userData.userId }
         })
 
 
@@ -52,20 +48,18 @@ export async function createCredential(req: Request, res: Response) {
 }
 
 export async function getCredentials(req: Request, res: Response) {
+    const { authorization } = req.headers
 
-    const token = ls.get<string>('accessToken');
+    const userToken = authorization.split('')[1]
 
-   
-    if (!token) {
-        return res.status(401).json({ error: 'Token is missing in localStorage' });
-    }
+    
 
     const userData = await prisma.sessions.findFirst({
-        where: {token: token}
+        where: { token: userToken }
     })
 
     const myCredentials = await prisma.credential.findMany({
-        where: {userId: userData.userId}
+        where: { userId: userData.userId }
     })
 
     try {
