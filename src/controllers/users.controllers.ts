@@ -110,6 +110,10 @@ export async function logoutUser(req: Request, res: Response) {
         where: { token: userToken }
     })
 
+    if (!userData) {
+        return res.status(401).json({error: 'Token not found on sessions.'})
+    }
+
     await prisma.sessions.delete({
         where: { id: userData.id }
     });
