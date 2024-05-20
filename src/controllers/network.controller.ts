@@ -74,7 +74,6 @@ export async function getNetwork(req: Request, res: Response) {
 
 export async function getNetworkById(req: Request, res: Response) {
     try {
-        console.log('entrou')
        
         const {authorization} = req.headers
 

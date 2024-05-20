@@ -16,7 +16,8 @@ const prisma = new PrismaClient()
 
 describe('/GET Health', () => {
     it('001 - Health: it shall return 200 if the route is correct', async () => {
-        const result = await supertest(app).post("/health")
+        const token = 'aaaa'
+        const result = await supertest(app).set('Authorization', `Bearer ${token}`).post("/health")
         const status = result.status;
 
         expect(status).toBe(200)

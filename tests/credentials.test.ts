@@ -125,16 +125,18 @@ describe('/GET Read - Credentials', () => {
         const token = userSession.token
 
 
-        ////aqui deu erro e não sei porqu. Mas não sei como criar user e fazer relação com outra tabela
-        // await prisma.credential.create({
-        //     data: {
-        //             title: credentialBodyMock.title,
-        //             url: credentialBodyMock.url,
-        //             user: verification.email,
-        //             username: verification.email,
-        //             password: verification.password,
-        //     } 
-        // })
+        //aprendi a fazer a relação de uma tabela com outra via teste
+        await prisma.credential.create({
+            data: {
+                    title: credentialBodyMock.title,
+                    url: credentialBodyMock.url,
+                    username: verification.email,
+                    password: verification.password,
+                    user: {
+                        connect: { id: verification.id } // Conectando a credencial ao usuário existente
+                    }
+            } 
+        })
 
 
         
@@ -142,7 +144,7 @@ describe('/GET Read - Credentials', () => {
         const result = await supertest(app).post("/credential/create").set('Authorization', `Bearer ${token}`).send(credentialBodyMock);
         const status = result.status;
 
-        const result2 = await supertest(app).set('Authorization', `Bearer ${token}`).get("/credential/read");
+        const result2 = await supertest(app).get("/credential/read").set('Authorization', `Bearer ${token}`);
         const status2 = result2.status;
 
 
