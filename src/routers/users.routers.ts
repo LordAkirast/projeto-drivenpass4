@@ -4,7 +4,7 @@ import express, { Express } from 'express';
 import cors from 'cors';
 import { validateUsersSchema, validateUserIDSchema } from "../middlewares/users.middleware";
 import { authenticationValidation } from "../middlewares/authentication.middleware";
-////import de controllers
+
 
 const usersRouter = Router()
 usersRouter.post('/create', validateUsersSchema, createUser)

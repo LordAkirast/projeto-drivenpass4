@@ -14,6 +14,7 @@ const prisma = new PrismaClient()
 ////o que eu não sei
 ///ambientes de produção
 ///separar em services e repositories
+///como passar informação da middleware de autenticação para dentro da função
 
 export async function createUser(req: Request, res: Response) {
     const userBody = req.body as userBodyProtocol
@@ -102,6 +103,7 @@ export async function loginUser(req: Request, res: Response,) {
 
 export async function logoutUser(req: Request, res: Response) {
     ////não sei como não precisar repetir
+    ///como que eu pego essas informações de dentro do middleware de autenticação? pois preciso do token para validar a sessions
     const { authorization } = req.headers
 
     const userToken = authorization.split(' ')[1]
