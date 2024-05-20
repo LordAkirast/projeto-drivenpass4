@@ -12,15 +12,11 @@ import { getCredentials } from "./credentials.controller";
 const prisma = new PrismaClient()
 
 ////o que eu não sei
-////como usar corretamente o throw
 ///ambientes de produção
-///authorization
 ///separar em services e repositories
 
 export async function createUser(req: Request, res: Response) {
     const userBody = req.body as userBodyProtocol
-
-
 
     try {
         const verifyExistingUser = await prisma.user.findFirst({
@@ -42,7 +38,7 @@ export async function createUser(req: Request, res: Response) {
             }
         });
 
-       // console.log(hashedPassword)
+        // console.log(hashedPassword)
 
 
         return res.status(201).send(operationSuccesfull.message)
@@ -55,11 +51,6 @@ export async function createUser(req: Request, res: Response) {
 
 export async function loginUser(req: Request, res: Response,) {
     const userBody = req.body as userBodyProtocol
-    const {authorization} = req.headers
-    ////verifica na sessions se o token existe la
-    /// quando fazer o middleware, depois da requisição na session para pegar o token
-    /// no middleware colocar req.banana e ai dá de retornar isso no login por exemplo token: req.banana
-
 
     try {
 
@@ -89,10 +80,6 @@ export async function loginUser(req: Request, res: Response,) {
         if (verifyExistingUser) {
             const accessToken = uuid();
 
-            ls.set<string>('accessToken', accessToken);
-            ///isso salva o token na accessToken para pegar ele de volta tem que usar
-            ///const token = ls.get<string>('accessToken'); ai o token é salvo em token.
-
             const session = await prisma.sessions.create({
                 data: {
                     email: verifyExistingUser.email,
@@ -114,27 +101,20 @@ export async function loginUser(req: Request, res: Response,) {
 }
 
 export async function logoutUser(req: Request, res: Response) {
-    const token: string = ls.get<string>('accessToken')
 
-    if (!token) {
-        return res.status(401).send('User is not logged to be able to logout.')
-    }
+    const { authorization } = req.headers
 
-    const sessionToDelete = await prisma.sessions.findFirst({
-        where: { token: token }
+    const userToken = authorization.split('')[1]
+
+    const userData = await prisma.sessions.findFirst({
+        where: { token: userToken }
+    })
+
+    await prisma.sessions.delete({
+        where: { id: userData.id }
     });
 
-    if (sessionToDelete) {
-        await prisma.sessions.delete({
-            where: { id: sessionToDelete.id }
-        });
-        ls.clear(); ///limpa o localStorage
-        return res.status(202).send(operationSuccesfull.message)
-    } else {
-        return res.status(401).send('User is not logged')
-    }
-
-
+    return res.status(202).send(operationSuccesfull.message)
 
 }
 
