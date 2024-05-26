@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { credentialBodyProtocol } from "../protocols/credentials.protocols";
 import { credentialAlreadyExists } from "../middlewares/errors.middleware";
 import { operationSuccesfull } from "../middlewares/success.middleware";
+import { userSessionBodyProtocol } from "../protocols/users.protocols";
 import * as ls from "local-storage";
 
 const prisma = new PrismaClient()
@@ -10,9 +11,9 @@ const prisma = new PrismaClient()
 
 export async function createCredential(req: Request, res: Response) {
     const credentialBody = req.body as credentialBodyProtocol
-    const { authorization } = req.headers
 
-    const userToken = authorization.split(' ')[1]
+    const user : userSessionBodyProtocol = res.locals.users
+    const userToken = user.token
 
     const userData = await prisma.sessions.findFirst({
         where: { token: userToken }
@@ -52,9 +53,9 @@ export async function createCredential(req: Request, res: Response) {
 }
 
 export async function getCredentials(req: Request, res: Response) {
-    const { authorization } = req.headers
-
-    const userToken = authorization.split(' ')[1]
+    
+    const user : userSessionBodyProtocol = res.locals.users
+    const userToken = user.token
 
     
 

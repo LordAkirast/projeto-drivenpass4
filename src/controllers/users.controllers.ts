@@ -8,22 +8,27 @@ import { v4 as uuid } from 'uuid';
 import * as ls from "local-storage";
 import bcrypt from "bcrypt";
 import { getCredentials } from "./credentials.controller";
+///repositories
+import { getUserRepository } from "../repositories/users.repositories";
 
 const prisma = new PrismaClient()
 
 ////o que eu não sei
 ///ambientes de produção
 ///separar em services e repositories
-///como passar informação da middleware de autenticação para dentro da função
+///em repositories, não entendi a parte de promise
 
 export async function createUser(req: Request, res: Response) {
     const userBody = req.body as userBodyProtocol
 
     try {
-        const verifyExistingUser = await prisma.user.findFirst({
-            where: { email: userBody.email }
-        })
+        // const verifyExistingUser = await prisma.user.findFirst({
+        //     where: { email: userBody.email }
+        // })
 
+        const verifyExistingUser = await getUserRepository(userBody);
+
+        console.log(verifyExistingUser)
 
         if (verifyExistingUser) {
             console.log('verifyExistingUser tem valor: ', verifyExistingUser)
