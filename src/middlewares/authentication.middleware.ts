@@ -27,5 +27,10 @@ export async function authenticationValidation(req: Request, res: Response, Next
         return res.status(401).json({error: 'Token not found!'})
     }
 
+    ///res.locals.variavel = algum valor
+    ///depois no controller
+    ///const user = res.locals.variavel
+    ///ai pode user const token = user.token
+    res.locals.users = verifyToken
     NextFunction()
 }

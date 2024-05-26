@@ -10,4 +10,4 @@ networkRouter.get('/read/:id', getNetworkById);
 networkRouter.delete('/delete/:id', deleteNetworkById);
 networkRouter.delete('/delete', deleteAllNetworks)
 
-export default networkRouter;
+export default networkRouter;////import de controllersa

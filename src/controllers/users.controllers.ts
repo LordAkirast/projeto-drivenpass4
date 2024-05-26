@@ -102,18 +102,15 @@ export async function loginUser(req: Request, res: Response,) {
 }
 
 export async function logoutUser(req: Request, res: Response) {
-    ////não sei como não precisar repetir
-    ///como que eu pego essas informações de dentro do middleware de autenticação? pois preciso do token para validar a sessions
-    const { authorization } = req.headers
-
-    const userToken = authorization.split(' ')[1]
+    const users = res.locals.users
+    const userToken = users.token
 
     const userData = await prisma.sessions.findFirst({
         where: { token: userToken }
     })
 
-    if (!userData) {
-        return res.status(401).json({error: 'Token not found on sessions.'})
+    if (!userData || userData == undefined) {
+        return res.status(401).json({ error: 'Token not found on sessions.' })
     }
 
     await prisma.sessions.delete({
