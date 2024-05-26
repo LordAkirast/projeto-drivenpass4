@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
+import { userSessionBodyProtocol } from "../protocols/users.protocols";
 
 const prisma = new PrismaClient()
 

@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { networkBodyProtocol } from "../protocols/network.protocols";
 import { credentialAlreadyExists } from "../middlewares/errors.middleware";
 import { operationSuccesfull } from "../middlewares/success.middleware";
+import { userSessionBodyProtocol } from "../protocols/users.protocols";
 import * as ls from "local-storage";
 
 const prisma = new PrismaClient()
@@ -10,9 +11,10 @@ const prisma = new PrismaClient()
 
 export async function createNetwork(req: Request, res: Response) {
     const networkBody = req.body as networkBodyProtocol
-    const {authorization} = req.headers
 
-    const userToken = authorization.split(' ')[1]
+    const user : userSessionBodyProtocol = res.locals.users
+    const userToken = user.token
+
 
     const userData = await prisma.sessions.findFirst({
         where: {token: userToken}
@@ -45,9 +47,8 @@ export async function createNetwork(req: Request, res: Response) {
 
 export async function getNetwork(req: Request, res: Response) {
 
-    const {authorization} = req.headers
-
-    const userToken = authorization.split(' ')[1]
+    const user : userSessionBodyProtocol = res.locals.users
+    const userToken = user.token
 
     const userData = await prisma.sessions.findFirst({
         where: {token: userToken}
@@ -75,9 +76,8 @@ export async function getNetwork(req: Request, res: Response) {
 export async function getNetworkById(req: Request, res: Response) {
     try {
        
-        const {authorization} = req.headers
-
-        const userToken = authorization.split(' ')[1]
+        const user : userSessionBodyProtocol = res.locals.users
+        const userToken = user.token
     
         const userData = await prisma.sessions.findFirst({
             where: {token: userToken}
@@ -105,9 +105,8 @@ export async function getNetworkById(req: Request, res: Response) {
 
 export async function deleteNetworkById(req: Request, res: Response) {
     try {
-        const {authorization} = req.headers
-
-        const userToken = authorization.split(' ')[1]
+        const user : userSessionBodyProtocol = res.locals.users
+        const userToken = user.token
     
         const userData = await prisma.sessions.findFirst({
             where: {token: userToken}
