@@ -28,10 +28,6 @@ describe('/POST Create - Users', () => {
         const result = await supertest(app).post("/users/create").send(usersBodyMock);
         const status = result.status;
 
-        const findAllUsers = await prisma.user.findMany()
-
-        console.log(findAllUsers)
-
         expect(status).toBe(201)
     })
 
@@ -40,10 +36,6 @@ describe('/POST Create - Users', () => {
         const findCreatedUser = await prisma.user.findFirst({
             where: { id: 1 }
         })
-
-        const findAllUsers = await prisma.user.findMany()
-
-        console.log(findAllUsers)
 
         expect(findCreatedUser.email).toBe(usersBodyMock.email)
 

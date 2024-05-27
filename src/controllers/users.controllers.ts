@@ -18,6 +18,8 @@ const prisma = new PrismaClient()
 ///ambientes de produção
 ///separar em services e repositories
 ///em repositories, não entendi a parte de promise
+///não sei como retornar status error code
+//// não sei como conseguir puxar informação de dentro da service para o controller de novo
 
 export async function createUser(req: Request, res: Response) {
     const userBody = req.body as userBodyProtocol
@@ -40,20 +42,23 @@ export async function loginUser(req: Request, res: Response,) {
 
     try {
 
-        const verifyExistingUser = await prisma.user.findFirst({
-            where: { email: userBody.email }
-        })
+        // const verifyExistingUser = await prisma.user.findFirst({
+        //     where: { email: userBody.email }
+        // })
 
-        if (!verifyExistingUser) {
-            return res.status(401).send('E-mail ou senha incorretos');
-        }
+        // if (!verifyExistingUser) {
+        //     return res.status(401).send('E-mail ou senha incorretos');
+        // }
 
         // Compara a senha fornecida com a senha hash armazenada no banco de dados
-        const passwordMatch = await bcrypt.compare(userBody.password, verifyExistingUser.password);
+        // const passwordMatch = await bcrypt.compare(userBody.password, verifyExistingUser.password); remover
 
-        if (!passwordMatch) {
-            return res.status(401).send('E-mail ou senha incorretos');
-        }
+        // if (!passwordMatch) {
+        //     return res.status(401).send('E-mail ou senha incorretos'); remover
+        // }
+
+
+        ///erro aqui, não consegui passar dessa parte pois começou a dar um erro estranho
 
         const verifyLoggedUser = await prisma.sessions.findFirst({
             where: { email: userBody.email }
