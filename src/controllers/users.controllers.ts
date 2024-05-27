@@ -9,7 +9,8 @@ import * as ls from "local-storage";
 import bcrypt from "bcrypt";
 import { getCredentials } from "./credentials.controller";
 ///repositories
-import { getUserRepository } from "../repositories/users.repositories";
+import { getUserRepository, createUserRepository } from "../repositories/users.repositories";
+import { createUserService } from "../services/user.services";
 
 const prisma = new PrismaClient()
 
@@ -22,30 +23,9 @@ export async function createUser(req: Request, res: Response) {
     const userBody = req.body as userBodyProtocol
 
     try {
-        // const verifyExistingUser = await prisma.user.findFirst({
-        //     where: { email: userBody.email }
-        // })
-
-        const verifyExistingUser = await getUserRepository(userBody);
-
-        console.log(verifyExistingUser)
-
-        if (verifyExistingUser) {
-            console.log('verifyExistingUser tem valor: ', verifyExistingUser)
-            return res.status(409).send(EmailAlreadyExists.message)
-        }
 
         const hashedPassword = await bcrypt.hash(userBody.password, 10);
-
-        await prisma.user.create({
-            data: {
-                email: userBody.email,
-                password: hashedPassword
-            }
-        });
-
-        // console.log(hashedPassword)
-
+        await createUserService(userBody, hashedPassword)
 
         return res.status(201).send(operationSuccesfull.message)
     } catch (error) {
