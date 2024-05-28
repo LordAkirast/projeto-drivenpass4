@@ -10,7 +10,8 @@ import bcrypt from "bcrypt";
 import { getCredentials } from "./credentials.controller";
 ///repositories
 import { getUserRepository, createUserRepository } from "../repositories/users.repositories";
-import { createUserService } from "../services/user.services";
+import { createUserService, loginUserService } from "../services/user.services";
+import { NotFoundError, ConflictError, WrongDataError } from "../errors/errorMessages";
 
 const prisma = new PrismaClient()
 
@@ -41,53 +42,28 @@ export async function loginUser(req: Request, res: Response,) {
     const userBody = req.body as userBodyProtocol
 
     try {
-
-        // const verifyExistingUser = await prisma.user.findFirst({
-        //     where: { email: userBody.email }
-        // })
-
-        // if (!verifyExistingUser) {
-        //     return res.status(401).send('E-mail ou senha incorretos');
-        // }
-
-        // Compara a senha fornecida com a senha hash armazenada no banco de dados
-        // const passwordMatch = await bcrypt.compare(userBody.password, verifyExistingUser.password); remover
-
-        // if (!passwordMatch) {
-        //     return res.status(401).send('E-mail ou senha incorretos'); remover
-        // }
+        const hashedPassword = await bcrypt.hash(userBody.password, 10);
+        ///como retornar o token de dentro da service?
+        await loginUserService(userBody, hashedPassword)
+        console.log('terminou de rodar a loginUserService')
+        console.log(loginUserService)
 
 
-        ///erro aqui, não consegui passar dessa parte pois começou a dar um erro estranho
 
-        const verifyLoggedUser = await prisma.sessions.findFirst({
-            where: { email: userBody.email }
-        })
-
-        if (verifyLoggedUser) {
-            return res.status(409).send('User is already logged.')
+        return res.status(200).json({ message: 'Usuário logado!' });
+    }
+    catch (error) {
+        if (error instanceof NotFoundError) {
+            return res.status(404).json({ error: error.message });
+        } else if (error instanceof ConflictError) {
+            return res.status(409).json({ error: error.message });
+        } else if (error instanceof WrongDataError) {
+            return res.status(401).json({ error: error.message });
         }
-
-        if (verifyExistingUser) {
-            const accessToken = uuid();
-
-            const session = await prisma.sessions.create({
-                data: {
-                    email: verifyExistingUser.email,
-                    token: accessToken,
-                    userId: verifyExistingUser.id
-                }
-            });
-
-            return res.status(200).json({ accessToken: accessToken, message: 'Usuário logado!' });
-        } else {
-            return res.status(401).json({ error: 'E-mail ou senha incorretos' });
+        else {
+            console.log(error);
+            return res.status(500).json({ error: 'Internal Server Error' });
         }
-
-    } catch (error) {
-
-        return res.status(500).send(error.message)
-
     }
 }
 

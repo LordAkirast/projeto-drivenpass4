@@ -72,7 +72,7 @@ describe('/POST Login - Users', () => {
         
     })
 
-    it('002 - Login: Given a valid body, and an incorrect user email and password non-existing on the database it shall and return 401', async () => {
+    it.only('002 - Login: Given a valid body, and an incorrect user email and password non-existing on the database it shall and return 401', async () => {
 
         prisma.user.create({
             data: usersBodyMock
