@@ -16,7 +16,7 @@ export async function healthCreate(req: Request, res: Response) {
     const healthBody = req.body as healthBodyProtocol
 
     if (healthBody === undefined) {
-        console.log("healthBody é undefined. Retornando status 422...");
+        //console.log("healthBody é undefined. Retornando status 422...");
         return res.status(422).send('Unprocessable Entity');
     }
 

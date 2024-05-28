@@ -12,9 +12,6 @@ import { authenticationValidation } from './middlewares/authentication.middlewar
 
 const prisma = new PrismaClient()
 
-///agora tem que criar joi para usersRouter e depois criar testes
-///depois ler o negócio do notion e continuar criando, talvez, login?
-
 const app = express()
 
 app

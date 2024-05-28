@@ -51,7 +51,7 @@ describe('/POST Create - Network', () => {
         })
 
 
-        ////isso no get de network
+        isso no get de network
         await prisma.network.create({
             data: networkBodyMock(userData.id)
         })
@@ -166,7 +166,7 @@ describe('/GET Read - Network', () => {
 });
 
 
-///não sei como fazer para criar uma network e vincular dados do UserID ou algo assim para validar que é do mesmo cara
+/não sei como fazer para criar uma network e vincular dados do UserID ou algo assim para validar que é do mesmo cara
 describe('/GET Read NetworkById', () => {
 
 

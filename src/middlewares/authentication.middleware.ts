@@ -22,7 +22,7 @@ export async function authenticationValidation(req: Request, res: Response, Next
         where: {token : userToken}
     })
 
-    //console.log(verifyToken)
+    ////console.log(verifyToken)
 
     if (!verifyToken) {
         return res.status(401).json({error: 'Token not found!'})
