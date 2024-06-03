@@ -1,8 +1,8 @@
- This is your Prisma schema file,
- learn more about it in the docs: https:pris.ly/d/prisma-schema
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
- Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
- Try Prisma Accelerate: https:pris.ly/cli/accelerate-init
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
@@ -27,7 +27,7 @@ model User {
   Network    Network[]
   Sessions   Sessions[]
 
-   @@map("users")
+  // @@map("users")
 }
 
 model Credential {
@@ -39,7 +39,7 @@ model Credential {
   password String
   userId   Int
 
-   @@map("credentials")
+  // @@map("credentials")
 }
 
 model Network {
@@ -50,7 +50,7 @@ model Network {
   password String
   userId   Int
 
-   @@map("networks")
+  // @@map("networks")
 }
 
 model Sessions {

@@ -125,7 +125,7 @@ describe('/GET Read - Credentials', () => {
         const token = userSession.token
 
 
-        aprendi a fazer a relação de uma tabela com outra via teste
+        //aprendi a fazer a relação de uma tabela com outra via teste
         await prisma.credential.create({
             data: {
                     title: credentialBodyMock.title,
@@ -133,7 +133,7 @@ describe('/GET Read - Credentials', () => {
                     username: verification.email,
                     password: verification.password,
                     user: {
-                        connect: { id: verification.id }  Conectando a credencial ao usuário existente
+                        connect: { id: verification.id } // Conectando a credencial ao usuário existente
                     }
             } 
         })
