@@ -43,6 +43,7 @@ export async function loginUser(req: Request, res: Response,) {
 
     try {
         const hashedPassword = await bcrypt.hash(userBody.password, 10);
+        console.log('USERBODY E HASHEEEEEEDDDD',userBody.password, hashedPassword)
         ///como retornar o token de dentro da service?
         await loginUserService(userBody, hashedPassword)
 

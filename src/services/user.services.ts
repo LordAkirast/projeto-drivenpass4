@@ -36,11 +36,12 @@ export async function loginUserService(userBody: userBodyProtocol, hashedPasswor
     }
 
     console.log('004 - O usuário existe no banco')
-    console.log(userBody.password, hashedPassword)
+    console.log(userBody.email, verifyExistingUser.email)
+    console.log('verifyExisting, Hashedd, Userbody',verifyExistingUser.password, hashedPassword, userBody.password)
 
 
     //verifica se a senha está correta
-    const passwordMatch = await bcrypt.compare(userBody.password, hashedPassword);
+    const passwordMatch = await bcrypt.compare(userBody.password, verifyExistingUser.password);
     console.log('005 - Verificou se senha está correta')
 
     if (!passwordMatch) {
