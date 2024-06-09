@@ -12,7 +12,7 @@ const prisma = new PrismaClient()
 export async function createCredential(req: Request, res: Response) {
     const credentialBody = req.body as credentialBodyProtocol
 
-    const user : userSessionBodyProtocol = res.locals.users
+    const user: userSessionBodyProtocol = res.locals.users
     const userToken = user.token
 
     const userData = await prisma.sessions.findFirst({
@@ -20,7 +20,7 @@ export async function createCredential(req: Request, res: Response) {
     })
 
     if (!userData) {
-        return res.status(401).json({error: 'Token not found on sessions.'})
+        return res.status(401).json({ error: 'Token not found on sessions.' })
     }
 
     try {
@@ -53,18 +53,18 @@ export async function createCredential(req: Request, res: Response) {
 }
 
 export async function getCredentials(req: Request, res: Response) {
-    
-    const user : userSessionBodyProtocol = res.locals.users
+
+    const user: userSessionBodyProtocol = res.locals.users
     const userToken = user.token
 
-    
+
 
     const userData = await prisma.sessions.findFirst({
         where: { token: userToken }
     })
 
     if (!userData) {
-        return res.status(401).json({error: 'Token not found on sessions.'})
+        return res.status(401).json({ error: 'Token not found on sessions.' })
     }
 
     const myCredentials = await prisma.credential.findMany({
@@ -72,6 +72,32 @@ export async function getCredentials(req: Request, res: Response) {
     })
 
     try {
+
+        return res.status(200).send(myCredentials)
+    } catch (error) {
+
+        return res.status(500).send(error.message)
+
+    }
+}
+
+export async function getCredentialByID(req: Request, res: Response) {
+    try {
+        const { id } = req.params;
+        const user: userSessionBodyProtocol = res.locals.users
+        const userToken = user.token
+
+        const userData = await prisma.sessions.findFirst({
+            where: { token: userToken }
+        })
+
+        if (!userData) {
+            return res.status(401).json({ error: 'Token not found on sessions.' })
+        }
+
+        const myCredentials = await prisma.credential.findUnique({
+            where: { userId: userData.userId, id: Number(id) }
+        })
 
         return res.status(200).send(myCredentials)
     } catch (error) {
