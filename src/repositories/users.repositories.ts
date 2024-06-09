@@ -10,10 +10,13 @@ export async function getUserRepository(userBody: userBodyProtocol): Promise<Use
    console.log('0003 - entrou na getUserRepository')
    console.log(userBody.email)
 
+   const verifyAllUsers = await prisma.user.findMany()
     const verifyExistingUser = await prisma.user.findFirst({
         where: { email: userBody.email }
     })
 
+
+    console.log(verifyAllUsers)
     if (verifyExistingUser) {
         console.log('Se isso é rota de criar usuário, deu erro pois o usuário já existe')
         console.log(verifyExistingUser)
@@ -29,7 +32,7 @@ export async function getUserRepository(userBody: userBodyProtocol): Promise<Use
 }
 
 export async function createUserRepository(userBody: userBodyProtocol, hashedPassword): Promise<User | null> {
-
+console.log('criou')
     return await prisma.user.create({
         data: {
             email: userBody.email,

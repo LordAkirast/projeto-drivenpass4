@@ -37,7 +37,7 @@ export async function createUser(req: Request, res: Response) {
         console.log("Is ConflictError:", error instanceof ConflictError);
         console.log("Is WrongDataError:", error instanceof WrongDataError);
 
-        
+
         if (error instanceof NotFoundError) {
             return res.status(404).json({ error: error.message });
         } else if (error instanceof ConflictError) {
@@ -98,11 +98,21 @@ export async function logoutUser(req: Request, res: Response) {
 }
 
 export async function deleteAllUsers(req: Request, res: Response) {
-    prisma.user.deleteMany()
-    return res.status(204).send(operationSuccesfull.message)
+    try {
+        await prisma.sessions.deleteMany()
+        await prisma.credential.deleteMany()
+        await prisma.network.deleteMany()
+        await prisma.user.deleteMany()
+        
+        return res.status(204).send(operationSuccesfull.message)
+    } catch (error) {
+        console.log(error.message)
+        return res.status(500).send(error)
+    }
+
 }
 
 export async function getAllUsers(req: Request, res: Response) {
-    const users = prisma.user.findMany()
+    const users = await prisma.user.findMany()
     return res.status(200).send(users)
 }
