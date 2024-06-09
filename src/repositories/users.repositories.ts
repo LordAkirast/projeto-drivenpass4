@@ -14,7 +14,13 @@ export async function getUserRepository(userBody: userBodyProtocol): Promise<Use
         where: { email: userBody.email }
     })
 
-    console.log(verifyExistingUser)
+    if (verifyExistingUser) {
+        console.log('Se isso é rota de criar usuário, deu erro pois o usuário já existe')
+        console.log(verifyExistingUser)
+    } else {
+        console.log('Usuário não existe')
+    }
+    
 
     console.log('0004 - passou da verifyExistingUser dentro da getUserRepository')
     

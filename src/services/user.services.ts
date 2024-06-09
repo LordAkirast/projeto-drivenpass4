@@ -13,7 +13,8 @@ export async function createUserService(userBody: userBodyProtocol, hashedPasswo
 
     ///não sei como retornar status error code aqui
     if (verifyExistingUser) {
-        throw new Error(EmailAlreadyExists.message);
+        console.log('AAAAAAAAAAAAAAAAAAAAAAAAA')
+        throw new ConflictError('Email already exists');
     }
 
     const newUser = await createUserRepository(userBody, hashedPassword);

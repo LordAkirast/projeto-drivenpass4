@@ -32,9 +32,22 @@ export async function createUser(req: Request, res: Response) {
 
         return res.status(201).send(operationSuccesfull.message)
     } catch (error) {
+        console.log("Error instance:", error);
+        console.log("Is NotFoundError:", error instanceof NotFoundError);
+        console.log("Is ConflictError:", error instanceof ConflictError);
+        console.log("Is WrongDataError:", error instanceof WrongDataError);
 
-        return res.status(500).send(error.message)
-
+        
+        if (error instanceof NotFoundError) {
+            return res.status(404).json({ error: error.message });
+        } else if (error instanceof ConflictError) {
+            return res.status(409).json({ error: error.message });
+        } else if (error instanceof WrongDataError) {
+            return res.status(401).json({ error: error.message });
+        } else {
+            console.log(error);
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
     }
 }
 
@@ -43,7 +56,7 @@ export async function loginUser(req: Request, res: Response,) {
 
     try {
         const hashedPassword = await bcrypt.hash(userBody.password, 10);
-        console.log('USERBODY E HASHEEEEEEDDDD',userBody.password, hashedPassword)
+        console.log('USERBODY E HASHEEEEEEDDDD', userBody.password, hashedPassword)
         ///como retornar o token de dentro da service?
         await loginUserService(userBody, hashedPassword)
 
@@ -87,4 +100,9 @@ export async function logoutUser(req: Request, res: Response) {
 export async function deleteAllUsers(req: Request, res: Response) {
     prisma.user.deleteMany()
     return res.status(204).send(operationSuccesfull.message)
+}
+
+export async function getAllUsers(req: Request, res: Response) {
+    const users = prisma.user.findMany()
+    return res.status(200).send(users)
 }
