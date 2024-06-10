@@ -15,12 +15,9 @@ import { NotFoundError, ConflictError, WrongDataError } from "../errors/errorMes
 
 const prisma = new PrismaClient()
 
-////o que eu não sei
-///ambientes de produção
-///separar em services e repositories
-///em repositories, não entendi a parte de promise
-///não sei como retornar status error code
-//// não sei como conseguir puxar informação de dentro da service para o controller de novo
+////tá dando erro de authorization na rota de logout. 
+///provavelmente o token não está sendo enviado ou lido
+///verifique o erro
 
 export async function createUser(req: Request, res: Response) {
     const userBody = req.body as userBodyProtocol

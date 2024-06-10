@@ -13,6 +13,7 @@ export async function authenticationValidation(req: Request, res: Response, Next
     }
 
     const userToken = authorization.split(' ')[1]
+    console.log(userToken)
 
     if (!userToken) {
         return res.status(401).json({ error: 'Token is missing' });
