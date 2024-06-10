@@ -1,10 +1,11 @@
-import { getUserRepository, createUserRepository, getSessionsRepository, createSessionRepository } from "../repositories/users.repositories";
-import { userBodyProtocol } from "../protocols/users.protocols";
+import { getUserRepository, createUserRepository, getSessionsRepository, createSessionRepository, getSessionsLogoutRepository, deleteSessionLogoutRepository } from "../repositories/users.repositories";
+import { userBodyProtocol, userFindActiveSessionProtocol } from "../protocols/users.protocols";
+///errors
+import { WrongDataError, ConflictError, InternalServerError, NotFoundError } from "../errors/errorMessages";
 import { PrismaClient, User, Sessions } from "@prisma/client";
 import { EmailAlreadyExists } from "../middlewares/errors.middleware";
 import { v4 as uuid } from 'uuid';
 import bcrypt from "bcrypt";
-import { WrongDataError, ConflictError, InternalServerError } from "../errors/errorMessages";
 
 
 export async function createUserService(userBody: userBodyProtocol, hashedPassword): Promise<User> {
@@ -43,7 +44,7 @@ export async function loginUserService(userBody: userBodyProtocol, hashedPasswor
     if (verifyLoggedUser) {
         throw new ConflictError('User is already logged.');
     }
-   
+
     ///se o usuário de fato existir, cria o token
     if (verifyExistingUser) {
         const accessToken = uuid();
@@ -55,4 +56,17 @@ export async function loginUserService(userBody: userBodyProtocol, hashedPasswor
     } else {
         throw new InternalServerError('Something went wrong with the server');
     }
+}
+
+export async function logoutUserService(users, userToken) {
+
+    const findActiveSession : userFindActiveSessionProtocol = await getSessionsLogoutRepository(userToken)
+
+    if (!findActiveSession || findActiveSession == undefined) {
+        throw new NotFoundError('User session not found. User is not logged.');
+    }
+
+    const deleteActiveSession = await deleteSessionLogoutRepository(findActiveSession)
+    return deleteActiveSession
+
 }

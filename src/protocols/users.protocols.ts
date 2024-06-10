@@ -10,3 +10,10 @@ export type userSessionBodyProtocol = {
     token: string,
     userId: number
 }
+
+export type userFindActiveSessionProtocol = {
+    id: number;
+    email: string;
+    token: string;
+    userId: number;
+}

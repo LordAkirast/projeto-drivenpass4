@@ -9,8 +9,8 @@ import * as ls from "local-storage";
 import bcrypt from "bcrypt";
 import { getCredentials } from "./credentials.controller";
 ///repositories
-import { getUserRepository, createUserRepository } from "../repositories/users.repositories";
-import { createUserService, loginUserService } from "../services/user.services";
+import { getUserRepository, createUserRepository, getSessionsLogoutRepository } from "../repositories/users.repositories";
+import { createUserService, loginUserService, logoutUserService } from "../services/user.services";
 import { NotFoundError, ConflictError, WrongDataError } from "../errors/errorMessages";
 
 const prisma = new PrismaClient()
@@ -56,7 +56,7 @@ export async function loginUser(req: Request, res: Response,) {
         ///como retornar o token de dentro da service?
         const createSession = await loginUserService(userBody, hashedPassword);
 
-        return res.status(200).json({  message: 'Usuário logado!', token: createSession.token  });
+        return res.status(200).json({ message: 'Usuário logado!', token: createSession.token });
     }
     catch (error) {
         if (error instanceof NotFoundError) {
@@ -77,19 +77,25 @@ export async function logoutUser(req: Request, res: Response) {
     const users = res.locals.users
     const userToken = users.token
 
-    const userData = await prisma.sessions.findFirst({
-        where: { token: userToken }
-    })
 
-    if (!userData || userData == undefined) {
-        return res.status(401).json({ error: 'Token not found on sessions.' })
+    try {
+        await logoutUserService(users, userToken)
+        return res.status(202).send(operationSuccesfull.message)
+
+    } catch (error) {
+        if (error instanceof NotFoundError) {
+            return res.status(404).json({ error: error.message });
+        } else if (error instanceof ConflictError) {
+            return res.status(409).json({ error: error.message });
+        } else if (error instanceof WrongDataError) {
+            return res.status(401).json({ error: error.message });
+        }
+        else {
+            console.log(error);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
     }
 
-    await prisma.sessions.delete({
-        where: { id: userData.id }
-    });
-
-    return res.status(202).send(operationSuccesfull.message)
 
 }
 
@@ -99,7 +105,7 @@ export async function deleteAllUsers(req: Request, res: Response) {
         await prisma.credential.deleteMany()
         await prisma.network.deleteMany()
         await prisma.user.deleteMany()
-        
+
         return res.status(204).send(operationSuccesfull.message)
     } catch (error) {
         console.log(error.message)
