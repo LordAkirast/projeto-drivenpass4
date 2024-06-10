@@ -9,7 +9,7 @@ import * as ls from "local-storage";
 import bcrypt from "bcrypt";
 import { getCredentials } from "./credentials.controller";
 ///repositories
-import { getUserRepository, createUserRepository, getSessionsLogoutRepository, deleteAllUsersRepository } from "../repositories/users.repositories";
+import { deleteAllUsersRepository, getAllUsersRepository } from "../repositories/users.repositories";
 import { createUserService, loginUserService, logoutUserService } from "../services/user.services";
 import { NotFoundError, ConflictError, WrongDataError } from "../errors/errorMessages";
 
@@ -102,7 +102,7 @@ export async function deleteAllUsers(req: Request, res: Response) {
     try {
 
         await deleteAllUsersRepository()
-        
+
         return res.status(204).send(operationSuccesfull.message)
     } catch (error) {
         console.log(error.message)
@@ -112,6 +112,6 @@ export async function deleteAllUsers(req: Request, res: Response) {
 }
 
 export async function getAllUsers(req: Request, res: Response) {
-    const users = await prisma.user.findMany()
+    const users = await getAllUsersRepository()
     return res.status(200).send(users)
 }

@@ -86,3 +86,11 @@ export async function deleteAllUsersRepository() {
     await prisma.user.deleteMany()
 
 }
+
+export async function getAllUsersRepository() {
+
+    const users =  await prisma.user.findMany()
+
+    return users;
+
+}
