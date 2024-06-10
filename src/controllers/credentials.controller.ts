@@ -6,6 +6,7 @@ import { operationSuccesfull } from "../middlewares/success.middleware";
 import { userSessionBodyProtocol } from "../protocols/users.protocols";
 import * as ls from "local-storage";
 import { getCredentialByIDService } from "../services/credential.services";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient()
 
@@ -26,8 +27,13 @@ export async function createCredential(req: Request, res: Response) {
 
     try {
 
+        const hashedPassword = await bcrypt.hash(credentialBody.password, 10);
+
         const credentialData = {
-            ...credentialBody,
+            title: credentialBody.title,
+            url: credentialBody.url,
+            username: credentialBody.username,
+            password: hashedPassword,
             userId: userData.userId
         };
 
