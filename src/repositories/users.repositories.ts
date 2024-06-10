@@ -66,13 +66,23 @@ export async function getSessionsLogoutRepository(userToken) {
     ///repositories
 }
 
-export async function deleteSessionLogoutRepository(findActiveSession : userFindActiveSessionProtocol) {
+export async function deleteSessionLogoutRepository(findActiveSession: userFindActiveSessionProtocol) {
 
     const deletionSessionLogout = await prisma.sessions.delete({
         where: { id: findActiveSession.id }
     });
-    
+
 
 
     return deletionSessionLogout
+}
+
+
+export async function deleteAllUsersRepository() {
+
+    await prisma.sessions.deleteMany()
+    await prisma.credential.deleteMany()
+    await prisma.network.deleteMany()
+    await prisma.user.deleteMany()
+
 }

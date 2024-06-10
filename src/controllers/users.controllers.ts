@@ -9,7 +9,7 @@ import * as ls from "local-storage";
 import bcrypt from "bcrypt";
 import { getCredentials } from "./credentials.controller";
 ///repositories
-import { getUserRepository, createUserRepository, getSessionsLogoutRepository } from "../repositories/users.repositories";
+import { getUserRepository, createUserRepository, getSessionsLogoutRepository, deleteAllUsersRepository } from "../repositories/users.repositories";
 import { createUserService, loginUserService, logoutUserService } from "../services/user.services";
 import { NotFoundError, ConflictError, WrongDataError } from "../errors/errorMessages";
 
@@ -53,7 +53,6 @@ export async function loginUser(req: Request, res: Response,) {
 
     try {
         const hashedPassword = await bcrypt.hash(userBody.password, 10);
-        ///como retornar o token de dentro da service?
         const createSession = await loginUserService(userBody, hashedPassword);
 
         return res.status(200).json({ message: 'Usuário logado!', token: createSession.token });
@@ -101,11 +100,9 @@ export async function logoutUser(req: Request, res: Response) {
 
 export async function deleteAllUsers(req: Request, res: Response) {
     try {
-        await prisma.sessions.deleteMany()
-        await prisma.credential.deleteMany()
-        await prisma.network.deleteMany()
-        await prisma.user.deleteMany()
 
+        await deleteAllUsersRepository()
+        
         return res.status(204).send(operationSuccesfull.message)
     } catch (error) {
         console.log(error.message)
