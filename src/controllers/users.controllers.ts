@@ -9,10 +9,6 @@ import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient()
 
-////tá dando erro de authorization na rota de logout. 
-///provavelmente o token não está sendo enviado ou lido
-///verifique o erro
-
 export async function createUser(req: Request, res: Response) {
     const userBody = req.body as userBodyProtocol
 

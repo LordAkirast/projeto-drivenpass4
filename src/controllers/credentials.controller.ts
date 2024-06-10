@@ -1,61 +1,42 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { credentialBodyProtocol } from "../protocols/credentials.protocols";
-import { credentialAlreadyExists } from "../middlewares/errors.middleware";
 import { operationSuccesfull } from "../middlewares/success.middleware";
 import { userSessionBodyProtocol } from "../protocols/users.protocols";
-import * as ls from "local-storage";
-import { getCredentialByIDService } from "../services/credential.services";
+import { getCredentialByIDService, createCredentialService } from "../services/credential.services";
+import { NotFoundError, ConflictError, WrongDataError } from "../errors/errorMessages";
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient()
 
 
 export async function createCredential(req: Request, res: Response) {
-    const credentialBody = req.body as credentialBodyProtocol
-
-    const user: userSessionBodyProtocol = res.locals.users
-    const userToken = user.token
-
-    const userData = await prisma.sessions.findFirst({
-        where: { token: userToken }
-    })
-
-    if (!userData) {
-        return res.status(401).json({ error: 'Token not found on sessions.' })
-    }
-
     try {
-
+        const credentialBody = req.body as credentialBodyProtocol
+        const user: userSessionBodyProtocol = res.locals.users
+        const userToken = user.token
         const hashedPassword = await bcrypt.hash(credentialBody.password, 10);
 
-        const credentialData = {
-            title: credentialBody.title,
-            url: credentialBody.url,
-            username: credentialBody.username,
-            password: hashedPassword,
-            userId: userData.userId
-        };
-
-        const verifyExistingCredential = await prisma.credential.findFirst({
-            where: { title: credentialBody.title, userId: userData.userId }
-        })
-
-
-        if (verifyExistingCredential) {
-            return res.status(409).send(credentialAlreadyExists.message)
-        }
-
-        await prisma.credential.create({
-            data: credentialData
-        })
-
+        await createCredentialService(user, credentialBody, hashedPassword)
 
         return res.status(201).send(operationSuccesfull.message)
     } catch (error) {
+        console.log("Error instance:", error);
+        console.log("Is NotFoundError:", error instanceof NotFoundError);
+        console.log("Is ConflictError:", error instanceof ConflictError);
+        console.log("Is WrongDataError:", error instanceof WrongDataError);
 
-        return res.status(500).send(error.message)
 
+        if (error instanceof NotFoundError) {
+            return res.status(404).json({ error: error.message });
+        } else if (error instanceof ConflictError) {
+            return res.status(409).json({ error: error.message });
+        } else if (error instanceof WrongDataError) {
+            return res.status(401).json({ error: error.message });
+        } else {
+            console.log(error);
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
     }
 }
 
