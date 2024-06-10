@@ -5,6 +5,7 @@ import { credentialAlreadyExists } from "../middlewares/errors.middleware";
 import { operationSuccesfull } from "../middlewares/success.middleware";
 import { userSessionBodyProtocol } from "../protocols/users.protocols";
 import * as ls from "local-storage";
+import { getCredentialByIDService } from "../services/credential.services";
 
 const prisma = new PrismaClient()
 
@@ -87,19 +88,61 @@ export async function getCredentialByID(req: Request, res: Response) {
         const user: userSessionBodyProtocol = res.locals.users
         const userToken = user.token
 
+        await getCredentialByIDService(id, user)
+
+        ////repositories
         const userData = await prisma.sessions.findFirst({
             where: { token: userToken }
         })
+        ////repositories
 
+        ////services
         if (!userData) {
             return res.status(401).json({ error: 'Token not found on sessions.' })
         }
+        ////services
 
+        ////repositories
         const myCredentials = await prisma.credential.findUnique({
             where: { userId: userData.userId, id: Number(id) }
         })
+        ////repositories
 
         return res.status(200).send(myCredentials)
+    } catch (error) {
+
+        return res.status(500).send(error.message)
+
+    }
+}
+
+export async function deleteCredentialByID(req: Request, res: Response) {
+    try {
+        const { id } = req.params;
+        const user: userSessionBodyProtocol = res.locals.users
+        const userToken = user.token
+
+        await getCredentialByIDService(id, user)
+
+        ////repositories
+        const userData = await prisma.sessions.findFirst({
+            where: { token: userToken }
+        })
+        ////repositories
+
+        ////services
+        if (!userData) {
+            return res.status(401).json({ error: 'Token not found on sessions.' })
+        }
+        ////services
+
+        ////repositories
+        const myCredentials = await prisma.credential.delete({
+            where: { userId: userData.userId, id: Number(id) }
+        })
+        ////repositories
+
+        return res.status(200).send('Deletion Complete')
     } catch (error) {
 
         return res.status(500).send(error.message)
