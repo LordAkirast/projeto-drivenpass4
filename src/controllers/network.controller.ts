@@ -5,6 +5,7 @@ import { credentialAlreadyExists } from "../middlewares/errors.middleware";
 import { operationSuccesfull } from "../middlewares/success.middleware";
 import { userSessionBodyProtocol } from "../protocols/users.protocols";
 import * as ls from "local-storage";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient()
 
@@ -12,23 +13,31 @@ const prisma = new PrismaClient()
 export async function createNetwork(req: Request, res: Response) {
     const networkBody = req.body as networkBodyProtocol
 
-    const user : userSessionBodyProtocol = res.locals.users
+    const user: userSessionBodyProtocol = res.locals.users
     const userToken = user.token
 
+    const hashedPassword = await bcrypt.hash(networkBody.password, 10);
 
+
+    ///repositories
     const userData = await prisma.sessions.findFirst({
-        where: {token: userToken}
+        where: { token: userToken }
     })
+    ///repositories
 
+    ///services
     if (!userData) {
-        return res.status(401).json({error: 'Token not found on sessions.'})
+        return res.status(401).json({ error: 'Token not found on sessions.' })
     }
+    ///services
 
     try {
 
         const networkData = {
-            ...networkBody,
-            userId: userData.userId 
+            title: networkBody.title,
+            network: networkBody.network,
+            password: hashedPassword,
+            userId: userData.userId
         };
 
 
@@ -47,20 +56,20 @@ export async function createNetwork(req: Request, res: Response) {
 
 export async function getNetwork(req: Request, res: Response) {
 
-    const user : userSessionBodyProtocol = res.locals.users
+    const user: userSessionBodyProtocol = res.locals.users
     const userToken = user.token
 
     const userData = await prisma.sessions.findFirst({
-        where: {token: userToken}
+        where: { token: userToken }
     })
 
     if (!userData) {
-        return res.status(401).json({error: 'Token not found on sessions.'})
+        return res.status(401).json({ error: 'Token not found on sessions.' })
     }
 
 
     const myNetworks = await prisma.network.findMany({
-        where: {userId: userData.userId}
+        where: { userId: userData.userId }
     })
 
     try {
@@ -75,16 +84,16 @@ export async function getNetwork(req: Request, res: Response) {
 
 export async function getNetworkById(req: Request, res: Response) {
     try {
-       
-        const user : userSessionBodyProtocol = res.locals.users
+
+        const user: userSessionBodyProtocol = res.locals.users
         const userToken = user.token
-    
+
         const userData = await prisma.sessions.findFirst({
-            where: {token: userToken}
+            where: { token: userToken }
         })
-    
+
         if (!userData) {
-            return res.status(401).json({error: 'Token not found on sessions.'})
+            return res.status(401).json({ error: 'Token not found on sessions.' })
         }
 
         const { id } = req.params;
@@ -105,11 +114,11 @@ export async function getNetworkById(req: Request, res: Response) {
 
 export async function deleteNetworkById(req: Request, res: Response) {
     try {
-        const user : userSessionBodyProtocol = res.locals.users
+        const user: userSessionBodyProtocol = res.locals.users
         const userToken = user.token
-    
+
         const userData = await prisma.sessions.findFirst({
-            where: {token: userToken}
+            where: { token: userToken }
         })
 
 
@@ -117,19 +126,19 @@ export async function deleteNetworkById(req: Request, res: Response) {
             return res.status(401).json({ error: 'User session not found' });
         }
 
-        
+
         const { id } = req.params;
 
-        
+
         const deleteTry = await prisma.network.delete({
             where: { id: Number(id), userId: userData.userId }
         });
 
-        if(!deleteTry) {
+        if (!deleteTry) {
             return res.status(409).send('This network does not belongs to you.')
         }
 
-        
+
         return res.status(204).send(operationSuccesfull);
     } catch (error) {
         return res.status(500).send(error.message);

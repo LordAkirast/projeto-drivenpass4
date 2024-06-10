@@ -23,23 +23,14 @@ export async function createUserService(userBody: userBodyProtocol, hashedPasswo
 
 export async function loginUserService(userBody: userBodyProtocol, hashedPassword): Promise<Sessions> {
 
-    console.log('001 - entrou na loginUserService')
-
-    console.log('002 - DataCheck', userBody, hashedPassword)
     ///verifica se o usuário já existe
     const verifyExistingUser = await getUserRepository(userBody);
 
-    console.log('003 - Passou da VerifyExistingUser')
-
-    ///não sei como retornar status error code aqui
     if (verifyExistingUser == null) {
         throw new WrongDataError('E-mail ou senha incorretos');
     }
 
-    console.log('004 - O usuário existe no banco')
     console.log(userBody.email, verifyExistingUser.email)
-    console.log('verifyExisting, Hashedd, Userbody',verifyExistingUser.password, hashedPassword, userBody.password)
-
 
     //verifica se a senha está correta
     const passwordMatch = await bcrypt.compare(userBody.password, verifyExistingUser.password);
