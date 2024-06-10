@@ -23,11 +23,13 @@ export async function getSessionsCredentialsRepository(user: userSessionBodyProt
     return userData
 }
 
-export async function verifyExistingCredentialRepository(credentialBody, userData) {
+export async function verifyExistingCredentialRepository(credentialBody : credentialBodyProtocol, userData): Promise<Credential | null> {
 
     const verifyExistingCredential = await prisma.credential.findFirst({
         where: { title: credentialBody.title, userId: userData.userId }
     })
+
+    console.log('02 - VerifyExistingCredenital: ', verifyExistingCredential)
     
 
     return verifyExistingCredential

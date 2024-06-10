@@ -30,11 +30,13 @@ export async function createCredentialService(user: userSessionBodyProtocol, cre
         userId: userData.id
     };
 
+    console.log('01 CredentialData: ',credentialData)
+
     const verifyExistingCredential = await verifyExistingCredentialRepository(credentialBody, userData)
 
     
     if (verifyExistingCredential) {
-        throw new NotFoundError(credentialAlreadyExists.message)
+        throw new ConflictError(credentialAlreadyExists.message)
     }
 
     await createCredentialRepository(credentialData)

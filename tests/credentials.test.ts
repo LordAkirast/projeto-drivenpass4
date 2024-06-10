@@ -24,7 +24,7 @@ afterAll(async () => {
 
 
 describe('/POST Create - Credentials', () => {
-    it('001 - Create: Given a valid body, it shall create a credential and return 201', async () => {
+    it ('001 - Create: Given a valid body, it shall create a credential and return 201', async () => {
 
         await prisma.sessions.deleteMany({
             where: {} 
@@ -80,7 +80,7 @@ describe('/POST Create - Credentials', () => {
 })
 
 describe('/GET Read - Credentials', () => {
-    it('001 - Read: If an user exits, it has credentials and a valid token, it shall return all credentials whose owner is the user and return 200', async () => {
+    it('001 - Read: If an user exists, it has credentials and a valid token, it shall return all credentials whose owner is the user and return 200', async () => {
 
         await prisma.sessions.deleteMany({
             where: {} 
