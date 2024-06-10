@@ -1,17 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { userBodyProtocol } from "../protocols/users.protocols";
-import { EmailAlreadyExists, generalServerError, unauthorizedError } from "../middlewares/errors.middleware";
 import { operationSuccesfull } from "../middlewares/success.middleware";
-import { usersSchema } from "../schemas/users.schemas";
-import { v4 as uuid } from 'uuid';
-import * as ls from "local-storage";
-import bcrypt from "bcrypt";
-import { getCredentials } from "./credentials.controller";
-///repositories
 import { deleteAllUsersRepository, getAllUsersRepository } from "../repositories/users.repositories";
 import { createUserService, loginUserService, logoutUserService } from "../services/user.services";
 import { NotFoundError, ConflictError, WrongDataError } from "../errors/errorMessages";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient()
 
