@@ -30,44 +30,26 @@ export async function loginUserService(userBody: userBodyProtocol, hashedPasswor
         throw new WrongDataError('E-mail ou senha incorretos');
     }
 
-    console.log(userBody.email, verifyExistingUser.email)
-
     //verifica se a senha está correta
     const passwordMatch = await bcrypt.compare(userBody.password, verifyExistingUser.password);
-    console.log('005 - Verificou se senha está correta')
 
     if (!passwordMatch) {
         throw new WrongDataError('E-mail ou senha incorretos');
     }
 
-    console.log('006 - Passou da verificação se senha está correta')
-
-
     ///verifica se o usuário já está logado
-    console.log('007 - verifica se o usuário já está logado')
     const verifyLoggedUser = await getSessionsRepository(userBody, hashedPassword)
 
     if (verifyLoggedUser) {
         throw new ConflictError('User is already logged.');
     }
-    console.log('010 - verificou que o usuário já está logado')
-
-
+   
     ///se o usuário de fato existir, cria o token
     if (verifyExistingUser) {
         const accessToken = uuid();
 
-        console.log('011 - Criou o Token')
-        console.log('012 - DataCHeck', userBody, hashedPassword, accessToken)
-
-
-
         ///cria a sessão do usuário
-        console.log('013 - Tenta criar sessão do usuário')
         const createSession = await createSessionRepository(verifyExistingUser, accessToken)
-
-        console.log('015 - Saiu da createSessionRepository')
-        console.log(createSession)
         return createSession;
 
     } else {

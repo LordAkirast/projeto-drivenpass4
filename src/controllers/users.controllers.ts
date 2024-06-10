@@ -54,9 +54,9 @@ export async function loginUser(req: Request, res: Response,) {
     try {
         const hashedPassword = await bcrypt.hash(userBody.password, 10);
         ///como retornar o token de dentro da service?
-        await loginUserService(userBody, hashedPassword)
+        const createSession = await loginUserService(userBody, hashedPassword);
 
-        return res.status(200).json({ message: 'Usuário logado!' });
+        return res.status(200).json({  message: 'Usuário logado!', token: createSession.token  });
     }
     catch (error) {
         if (error instanceof NotFoundError) {
