@@ -3,11 +3,12 @@ import { createUser, deleteAllUsers, loginUser, logoutUser } from "../controller
 import express, { Express } from 'express';
 import cors from 'cors';
 import { validateUsersSchema, validateUserIDSchema } from "../middlewares/users.middleware";
-import { createCredential, getCredentials, getCredentialByID } from "../controllers/credentials.controller";
+import { createCredential, getCredentials, getCredentialByID, deleteCredentialByID } from "../controllers/credentials.controller";
 
 const credentialRouter = Router()
 credentialRouter.post('/create', createCredential)
 credentialRouter.get('/read', getCredentials)
 credentialRouter.get('/read/:id', getCredentialByID)
+credentialRouter.delete('/delete/:id', deleteCredentialByID)
 
 export default credentialRouter;
