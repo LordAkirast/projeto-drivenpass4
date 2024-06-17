@@ -17,10 +17,19 @@ export async function getSessionsCredentialsRepository(user: userSessionBodyProt
         where: { token: user.token }
     })
 
-
-    
-
     return userData
+}
+
+
+
+/////aqui tem que usar esse Promise<Credential[]> pois retorna um array de objetos. em findMany ele retorna um array
+export async function getAllCredentialRepository(user : userSessionBodyProtocol, userData): Promise<Credential[]> {
+
+    const myCredentials = await prisma.credential.findMany({
+        where: { userId: userData.userId }
+    })
+
+    return myCredentials
 }
 
 export async function verifyExistingCredentialRepository(credentialBody : credentialBodyProtocol, userData): Promise<Credential | null> {

@@ -1,12 +1,30 @@
-import { PrismaClient } from "@prisma/client";
-import { Request, Response } from "express";
 import { credentialBodyProtocol } from "../protocols/credentials.protocols";
 import { credentialAlreadyExists } from "../middlewares/errors.middleware";
-import { operationSuccesfull } from "../middlewares/success.middleware";
 import { userSessionBodyProtocol } from "../protocols/users.protocols";
-import * as ls from "local-storage";
-import { getSessionsCredentialsRepository, verifyExistingCredentialRepository, createCredentialRepository } from "../repositories/credentials.repositories";
+import { getSessionsCredentialsRepository, verifyExistingCredentialRepository, createCredentialRepository, getAllCredentialRepository } from "../repositories/credentials.repositories";
 import { NotFoundError, ConflictError } from "../errors/errorMessages";
+
+
+export async function getCredentialService(user : userSessionBodyProtocol) {
+
+  const userData =  await getSessionsCredentialsRepository(user)
+    
+    if (!userData) {
+        throw new NotFoundError('Token not found on sessions.')
+    }
+
+    const myCredentials = await getAllCredentialRepository(user,userData)
+
+    return myCredentials
+}
+
+
+
+
+
+
+
+
 
 
 export async function getCredentialByIDService(id, user) {
@@ -39,6 +57,8 @@ export async function createCredentialService(user: userSessionBodyProtocol, cre
         throw new ConflictError(credentialAlreadyExists.message)
     }
 
-    await createCredentialRepository(credentialData)
+   const createCredential = await createCredentialRepository(credentialData)
+
+    return createCredential
 
 }
