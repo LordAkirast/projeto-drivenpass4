@@ -1,8 +1,6 @@
 import { Router } from "express";
 import { createUser, deleteAllUsers, loginUser, logoutUser, getAllUsers } from "../controllers/users.controllers";
-import express, { Express } from 'express';
-import cors from 'cors';
-import { validateUsersSchema, validateUserIDSchema } from "../middlewares/users.middleware";
+import { validateUsersSchema } from "../middlewares/users.middleware";
 import { authenticationValidation } from "../middlewares/authentication.middleware";
 
 

@@ -1,8 +1,4 @@
 import { Router } from "express";
-import { createUser, deleteAllUsers, loginUser, logoutUser } from "../controllers/users.controllers";
-import express, { Express } from 'express';
-import cors from 'cors';
-import { validateUsersSchema, validateUserIDSchema } from "../middlewares/users.middleware";
 import { createCredential, getCredentials, getCredentialByID, deleteCredentialByID } from "../controllers/credentials.controller";
 
 const credentialRouter = Router()
