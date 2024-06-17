@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createNetwork, getNetwork, getNetworkById, deleteNetworkById, deleteAllNetworks } from "../controllers/network.controller";
+import { createNetwork, getNetwork, getNetworkById, deleteNetworkById, DEVdeleteAllNetworks } from "../controllers/network.controller";
 import express, { Express } from 'express';
 import cors from 'cors';
 
@@ -8,6 +8,6 @@ networkRouter.post('/create', createNetwork)
 networkRouter.get('/read', getNetwork)
 networkRouter.get('/read/:id', getNetworkById);
 networkRouter.delete('/delete/:id', deleteNetworkById);
-networkRouter.delete('/delete', deleteAllNetworks)
+networkRouter.delete('/delete', DEVdeleteAllNetworks)
 
 export default networkRouter;

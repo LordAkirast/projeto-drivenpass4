@@ -74,7 +74,7 @@ export async function deleteNetworkById(req: Request, res: Response) {
 
 
 ////ESSA É UMA FUNÇÃO DEV PARA FACILITAR POR ISSO NÃO TEM VALIDAÇÃO DE TOKEN
-export async function deleteAllNetworks(req: Request, res: Response) {
+export async function DEVdeleteAllNetworks(req: Request, res: Response) {
 
     try {
         DEVdeleteAllNetworkService()
