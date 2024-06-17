@@ -31,6 +31,28 @@ export class WrongDataError extends Error {
     }
 }
 
+export class UnauthorizedError extends Error {
+    status: number;
+
+    constructor(message: string) {
+        super(message);
+        this.name = "UnauthorizedError";
+        this.status = 401;
+        Object.setPrototypeOf(this, UnauthorizedError.prototype);
+    }
+}
+
+export class BadRequestError extends Error {
+    status: number;
+
+    constructor(message: string) {
+        super(message);
+        this.name = "BadRequestError";
+        this.status = 400;
+        Object.setPrototypeOf(this, WrongDataError.prototype);
+    }
+}
+
 
 export class ConflictError extends Error {
     status: number;

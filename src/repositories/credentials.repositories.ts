@@ -53,3 +53,12 @@ export async function verifyExistingCredentialRepository(credentialBody : creden
     return verifyExistingCredential
 
 }
+
+export async function deleteCredentialByIDRepository(id, userData): Promise<Credential | null> {
+
+    const deleteCredentialByID = await prisma.credential.delete({
+        where: { userId: userData.userId, id: Number(id) }
+    })
+
+    return deleteCredentialByID
+}
