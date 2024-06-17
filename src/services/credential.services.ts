@@ -1,36 +1,35 @@
 import { credentialBodyProtocol } from "../protocols/credentials.protocols";
 import { credentialAlreadyExists } from "../middlewares/errors.middleware";
 import { userSessionBodyProtocol } from "../protocols/users.protocols";
-import { getSessionsCredentialsRepository, verifyExistingCredentialRepository, createCredentialRepository, getAllCredentialRepository } from "../repositories/credentials.repositories";
+import { getSessionsCredentialsRepository, verifyExistingCredentialRepository, createCredentialRepository, getAllCredentialRepository, getUniqueCredentialRepository } from "../repositories/credentials.repositories";
 import { NotFoundError, ConflictError } from "../errors/errorMessages";
 
 
-export async function getCredentialService(user : userSessionBodyProtocol) {
+export async function getCredentialService(user: userSessionBodyProtocol) {
 
-  const userData =  await getSessionsCredentialsRepository(user)
-    
+    const userData = await getSessionsCredentialsRepository(user)
+
     if (!userData) {
         throw new NotFoundError('Token not found on sessions.')
     }
 
-    const myCredentials = await getAllCredentialRepository(user,userData)
+    const myCredentials = await getAllCredentialRepository(user, userData)
 
     return myCredentials
 }
 
+export async function getCredentialByIDService(id, user: userSessionBodyProtocol,) {
 
+    const userData = await getSessionsCredentialsRepository(user)
 
+    if (!userData) {
+        throw new NotFoundError('Token not found on sessions.')
+    }
 
+    const credentialByID = await getUniqueCredentialRepository(id, userData)
 
-
-
-
-
-
-export async function getCredentialByIDService(id, user) {
-
+    return credentialByID
 }
-
 
 export async function createCredentialService(user: userSessionBodyProtocol, credentialBody: credentialBodyProtocol, hashedPassword) {
 
@@ -48,16 +47,16 @@ export async function createCredentialService(user: userSessionBodyProtocol, cre
         userId: userData.id
     };
 
-    console.log('01 CredentialData: ',credentialData)
+    console.log('01 CredentialData: ', credentialData)
 
     const verifyExistingCredential = await verifyExistingCredentialRepository(credentialBody, userData)
 
-    
+
     if (verifyExistingCredential) {
         throw new ConflictError(credentialAlreadyExists.message)
     }
 
-   const createCredential = await createCredentialRepository(credentialData)
+    const createCredential = await createCredentialRepository(credentialData)
 
     return createCredential
 

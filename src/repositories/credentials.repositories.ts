@@ -32,6 +32,15 @@ export async function getAllCredentialRepository(user : userSessionBodyProtocol,
     return myCredentials
 }
 
+export async function getUniqueCredentialRepository(id, userData): Promise<Credential | null> {
+
+    const credentialByID = await prisma.credential.findUnique({
+        where: { userId: userData.userId, id: Number(id) }
+    })
+
+    return credentialByID
+}
+
 export async function verifyExistingCredentialRepository(credentialBody : credentialBodyProtocol, userData): Promise<Credential | null> {
 
     const verifyExistingCredential = await prisma.credential.findFirst({

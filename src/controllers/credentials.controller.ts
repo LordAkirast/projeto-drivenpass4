@@ -75,31 +75,26 @@ export async function getCredentialByID(req: Request, res: Response) {
         const user: userSessionBodyProtocol = res.locals.users
         const userToken = user.token
 
-        await getCredentialByIDService(id, user)
+        const uniqueCredential = await getCredentialByIDService(id, user)
 
-        ////repositories
-        const userData = await prisma.sessions.findFirst({
-            where: { token: userToken }
-        })
-        ////repositories
-
-        ////services
-        if (!userData) {
-            return res.status(401).json({ error: 'Token not found on sessions.' })
-        }
-        ////services
-
-        ////repositories
-        const myCredentials = await prisma.credential.findUnique({
-            where: { userId: userData.userId, id: Number(id) }
-        })
-        ////repositories
-
-        return res.status(200).send(myCredentials)
+        return res.status(200).send(uniqueCredential)
     } catch (error) {
+        console.log("Error instance:", error);
+        console.log("Is NotFoundError:", error instanceof NotFoundError);
+        console.log("Is ConflictError:", error instanceof ConflictError);
+        console.log("Is WrongDataError:", error instanceof WrongDataError);
 
-        return res.status(500).send(error.message)
 
+        if (error instanceof NotFoundError) {
+            return res.status(404).json({ error: error.message });
+        } else if (error instanceof ConflictError) {
+            return res.status(409).json({ error: error.message });
+        } else if (error instanceof WrongDataError) {
+            return res.status(401).json({ error: error.message });
+        } else {
+            console.log(error);
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
     }
 }
 
