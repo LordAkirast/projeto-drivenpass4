@@ -49,7 +49,7 @@ export class BadRequestError extends Error {
         super(message);
         this.name = "BadRequestError";
         this.status = 400;
-        Object.setPrototypeOf(this, WrongDataError.prototype);
+        Object.setPrototypeOf(this, BadRequestError.prototype);
     }
 }
 
@@ -61,6 +61,6 @@ export class ConflictError extends Error {
         super(message);
         this.name = "ConflictError";
         this.status = 409;
-        Object.setPrototypeOf(this, ConflictError.prototype); // Adicione esta linha
+        Object.setPrototypeOf(this, ConflictError.prototype);
     }
 }

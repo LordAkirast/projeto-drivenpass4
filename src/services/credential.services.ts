@@ -71,11 +71,14 @@ export async function getCredentialByIDService(id, user: userSessionBodyProtocol
 
 export async function deleteCredentialByIDService(id, user: userSessionBodyProtocol,) {
 
+   
     const userData = await getSessionsCredentialsRepository(user)
 
     if (!userData) {
         throw new NotFoundError('Token not found on sessions.')
     }
+
+    
 
     const deleteCredentialByID = await deleteCredentialByIDRepository(id, userData)
 

@@ -113,6 +113,8 @@ export async function getCredentialByID(req: Request, res: Response) {
 
 export async function deleteCredentialByID(req: Request, res: Response) {
     try {
+
+        console.log('001 - entrou')
         const { id } = req.params;
         const user: userSessionBodyProtocol = res.locals.users
         const userToken = user.token
@@ -138,7 +140,6 @@ export async function deleteCredentialByID(req: Request, res: Response) {
         } else if (error instanceof BadRequestError) {
             return res.status(401).json({ error: error.message });
         } else {
-            console.log(error);
             return res.status(500).json({ error: "Internal Server Error" });
         }
     }

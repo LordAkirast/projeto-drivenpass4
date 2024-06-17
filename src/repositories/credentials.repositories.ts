@@ -8,7 +8,7 @@ export async function createCredentialRepository(credentialData): Promise<Creden
     return await prisma.credential.create({
         data: credentialData
     })
-    
+
 }
 
 export async function getSessionsCredentialsRepository(user: userSessionBodyProtocol): Promise<Sessions | null> {
@@ -23,7 +23,7 @@ export async function getSessionsCredentialsRepository(user: userSessionBodyProt
 
 
 /////aqui tem que usar esse Promise<Credential[]> pois retorna um array de objetos. em findMany ele retorna um array
-export async function getAllCredentialRepository(user : userSessionBodyProtocol, userData): Promise<Credential[]> {
+export async function getAllCredentialRepository(user: userSessionBodyProtocol, userData): Promise<Credential[]> {
 
     const myCredentials = await prisma.credential.findMany({
         where: { userId: userData.userId }
@@ -41,24 +41,31 @@ export async function getUniqueCredentialRepository(id, userData): Promise<Crede
     return credentialByID
 }
 
-export async function verifyExistingCredentialRepository(credentialBody : credentialBodyProtocol, userData): Promise<Credential | null> {
+export async function verifyExistingCredentialRepository(credentialBody: credentialBodyProtocol, userData): Promise<Credential | null> {
 
     const verifyExistingCredential = await prisma.credential.findFirst({
         where: { title: credentialBody.title, userId: userData.userId }
     })
 
     console.log('02 - VerifyExistingCredenital: ', verifyExistingCredential)
-    
+
 
     return verifyExistingCredential
 
 }
 
 export async function deleteCredentialByIDRepository(id, userData): Promise<Credential | null> {
+    try {
+        const deleteCredentialByID = await prisma.credential.delete({
+            where: { userId: userData.userId, id: Number(id) }
+        })
 
-    const deleteCredentialByID = await prisma.credential.delete({
-        where: { userId: userData.userId, id: Number(id) }
-    })
+        return deleteCredentialByID
 
-    return deleteCredentialByID
+    } catch (error) {
+
+        return null
+
+    }
+
 }
