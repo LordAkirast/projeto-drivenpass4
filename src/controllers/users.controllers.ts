@@ -1,11 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { userBodyProtocol } from "../protocols/users.protocols";
+import handleError from "./handleErrors.controller";
 import { operationSuccesfull } from "../middlewares/success.middleware";
+import { userBodyProtocol } from "../protocols/users.protocols";
 import { deleteAllUsersRepository, getAllUsersRepository } from "../repositories/users.repositories";
 import { createUserService, loginUserService, logoutUserService } from "../services/user.services";
-import { NotFoundError, ConflictError, WrongDataError, BadRequestError, UnauthorizedError } from "../errors/errorMessages";
-import handleError from "./handleErrors.controller";
+
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient()
