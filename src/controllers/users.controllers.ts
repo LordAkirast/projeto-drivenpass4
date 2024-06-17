@@ -18,7 +18,15 @@ export async function createUser(req: Request, res: Response) {
         const hashedPassword = await bcrypt.hash(userBody.password, 10);
         const createUser = await createUserService(userBody, hashedPassword)
 
-        return res.status(201).json(`${successMessage} : ${createUser}`)
+        const userCreatedDataForMessage = {
+            id: createUser.id,
+            email: createUser.email,
+            password: createUser.password
+        }
+        return res.status(201).json({
+            message: successMessage,
+            user: userCreatedDataForMessage
+        })
     } catch (error) {
         console.log("Error instance:", error);
         console.log("Is BadRequestError:", error instanceof BadRequestError);
