@@ -75,6 +75,7 @@ export async function getCredentialByID(req: Request, res: Response) {
         const user: userSessionBodyProtocol = res.locals.users
         const userToken = user.token
 
+
         const uniqueCredential = await getCredentialByIDService(id, user)
 
         return res.status(200).send(uniqueCredential)

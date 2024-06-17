@@ -28,6 +28,12 @@ export async function getCredentialByIDService(id, user: userSessionBodyProtocol
 
     const credentialByID = await getUniqueCredentialRepository(id, userData)
 
+    if (!credentialByID) {
+        throw new NotFoundError('There is no credential with this ID belonging to you.')
+    }
+    
+    //console.log(credentialByID)
+
     return credentialByID
 }
 
