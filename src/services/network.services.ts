@@ -3,7 +3,7 @@ import { credentialAlreadyExists } from "../middlewares/errors.middleware";
 import { userSessionBodyProtocol } from "../protocols/users.protocols";
 import { getSessionsCredentialsRepository, verifyExistingCredentialRepository, createCredentialRepository, getAllCredentialRepository, getUniqueCredentialRepository, deleteCredentialByIDRepository } from "../repositories/credentials.repositories";
 import { NotFoundError, ConflictError, UnauthorizedError, BadRequestError } from "../errors/errorMessages";
-import { createNetworkRepository, deleteNetworkByIDRepository, getNetworkByIDRepository, getNetworkRepository, getSessionsNetworkRepository } from "../repositories/network.repositories";
+import { DEVdeleteAllNetworksRepository, createNetworkRepository, deleteNetworkByIDRepository, getNetworkByIDRepository, getNetworkRepository, getSessionsNetworkRepository } from "../repositories/network.repositories";
 import { createNetwork } from "../controllers/network.controller";
 import { VerifyExistingSession } from "repositories/sessionsValidation.repositories";
 
@@ -80,5 +80,15 @@ if (!deleteNetworkByID) {
 }
 
 return deleteNetworkByID
+
+}
+
+export async function DEVdeleteAllNetworkService() {
+
+
+const DEVdeleteAllNetworks = await DEVdeleteAllNetworksRepository()
+
+
+return DEVdeleteAllNetworks
 
 }

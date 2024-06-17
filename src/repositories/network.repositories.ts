@@ -72,3 +72,16 @@ export async function deleteNetworkByIDRepository(id, userData) {
 
 
 }
+
+export async function DEVdeleteAllNetworksRepository() {
+    try {
+        const DEVdeleteAllNetworks = await prisma.network.deleteMany()
+        return DEVdeleteAllNetworks
+
+    } catch (error) {
+        return null
+
+    }
+
+
+}

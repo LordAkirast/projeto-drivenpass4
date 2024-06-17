@@ -6,7 +6,7 @@ import { operationSuccesfull } from "../middlewares/success.middleware";
 import { userSessionBodyProtocol } from "../protocols/users.protocols";
 import * as ls from "local-storage";
 import bcrypt from "bcrypt";
-import { createNetworkService, deleteNetworkByIDService, getNetworkByIDService, getNetworkService } from "../services/network.services";
+import { DEVdeleteAllNetworkService, createNetworkService, deleteNetworkByIDService, getNetworkByIDService, getNetworkService } from "../services/network.services";
 import handleError from "./handleErrors.controller";
 
 const prisma = new PrismaClient()
@@ -66,15 +66,25 @@ export async function deleteNetworkById(req: Request, res: Response) {
         const { id } = req.params;
 
         const deleteNetworkByID = await deleteNetworkByIDService(user, id)
-        
-        return res.status(204).json({deleteNetworkByID});
+
+        return res.status(204).json({ deleteNetworkByID });
     } catch (error) {
         handleError(res, error)
     }
 }
 
+
+
+////ESSA É UMA FUNÇÃO DEV PARA FACILITAR POR ISSO NÃO TEM VALIDAÇÃO DE TOKEN
 export async function deleteAllNetworks(req: Request, res: Response) {
-    prisma.network.deleteMany()
-    return res.status(204).send(operationSuccesfull.message)
+
+    try {
+        DEVdeleteAllNetworkService()
+        return res.status(204).send(operationSuccesfull.message)
+
+    } catch (error) {
+        handleError(res, error)
+    }
+
 }
 
