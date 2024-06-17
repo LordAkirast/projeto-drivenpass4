@@ -32,3 +32,14 @@ export async function createNetworkRepository(networkBody, userData, hashedPassw
     return createNetwork
 
 }
+
+export async function getNetworkRepository(userData) {
+
+    const myNetworks = await prisma.network.findMany({
+        where: { userId: userData.userId }
+    })
+
+
+    return myNetworks
+
+}
