@@ -12,7 +12,6 @@ const prisma = new PrismaClient()
 
 
 ///o que fazer?
-////criar services e repositories para networks
 ////criar schemas para credentials e network
 //// criar testes para todas as rotas
 

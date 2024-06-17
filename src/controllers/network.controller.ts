@@ -1,13 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { networkBodyProtocol } from "../protocols/network.protocols";
-import { credentialAlreadyExists } from "../middlewares/errors.middleware";
-import { operationSuccesfull } from "../middlewares/success.middleware";
-import { userSessionBodyProtocol } from "../protocols/users.protocols";
-import * as ls from "local-storage";
-import bcrypt from "bcrypt";
-import { DEVdeleteAllNetworkService, createNetworkService, deleteNetworkByIDService, getNetworkByIDService, getNetworkService } from "../services/network.services";
 import handleError from "./handleErrors.controller";
+import { operationSuccesfull } from "../middlewares/success.middleware";
+import { networkBodyProtocol } from "../protocols/network.protocols";
+import { userSessionBodyProtocol } from "../protocols/users.protocols";
+import { DEVdeleteAllNetworkService, createNetworkService, deleteNetworkByIDService, getNetworkByIDService, getNetworkService } from "../services/network.services";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient()
 
