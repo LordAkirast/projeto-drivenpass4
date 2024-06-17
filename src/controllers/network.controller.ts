@@ -6,7 +6,7 @@ import { operationSuccesfull } from "../middlewares/success.middleware";
 import { userSessionBodyProtocol } from "../protocols/users.protocols";
 import * as ls from "local-storage";
 import bcrypt from "bcrypt";
-import { createNetworkService, getNetworkService } from "../services/network.services";
+import { createNetworkService, getNetworkByIDService, getNetworkService } from "../services/network.services";
 import handleError from "./handleErrors.controller";
 
 const prisma = new PrismaClient()
@@ -16,8 +16,6 @@ export async function createNetwork(req: Request, res: Response) {
     const networkBody = req.body as networkBodyProtocol
 
     const user: userSessionBodyProtocol = res.locals.users
-    const userToken = user.token
-
     const hashedPassword = await bcrypt.hash(networkBody.password, 10);
 
     try {
@@ -33,53 +31,31 @@ export async function createNetwork(req: Request, res: Response) {
 }
 
 export async function getNetwork(req: Request, res: Response) {
-
     const user: userSessionBodyProtocol = res.locals.users
-    const userToken = user.token
+
     try {
-
         const myNetworks = await getNetworkService(user)
-
-
 
         return res.status(200).json({
             message: operationSuccesfull.message,
             network: myNetworks
         })
     } catch (error) {
-
-        return res.status(500).send(error.message)
+        handleError(res, error)
 
     }
 }
 
 export async function getNetworkById(req: Request, res: Response) {
     try {
-
         const user: userSessionBodyProtocol = res.locals.users
-        const userToken = user.token
-
-        const userData = await prisma.sessions.findFirst({
-            where: { token: userToken }
-        })
-
-        if (!userData) {
-            return res.status(401).json({ error: 'Token not found on sessions.' })
-        }
-
         const { id } = req.params;
 
-        const network = await prisma.network.findFirst({
-            where: { id: Number(id), userId: userData.userId }
-        });
+        const myUniqueNetwork = getNetworkByIDService(user, id)
 
-        if (!network) {
-            return res.status(404).json({ error: 'Network not found' });
-        }
-
-        return res.status(200).json(network);
+        return res.status(200).json(myUniqueNetwork);
     } catch (error) {
-        return res.status(500).send(error.message);
+        handleError(res, error)
     }
 }
 

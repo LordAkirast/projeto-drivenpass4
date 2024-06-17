@@ -43,3 +43,13 @@ export async function getNetworkRepository(userData) {
     return myNetworks
 
 }
+
+export async function getNetworkByIDRepository(id, userData) {
+
+    const myUniqueNetwork = await prisma.network.findFirst({
+        where: { id: Number(id), userId: userData.userId }
+    });
+
+    return myUniqueNetwork
+
+}
