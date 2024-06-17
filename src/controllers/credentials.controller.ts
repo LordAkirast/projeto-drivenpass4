@@ -5,6 +5,7 @@ import { operationSuccesfull } from "../middlewares/success.middleware";
 import { userSessionBodyProtocol } from "../protocols/users.protocols";
 import { getCredentialByIDService, createCredentialService, getCredentialService, deleteCredentialByIDService } from "../services/credential.services";
 import { NotFoundError, ConflictError, WrongDataError, UnauthorizedError, BadRequestError } from "../errors/errorMessages";
+import handleError from "./handleErrors.controller";
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient()
@@ -21,28 +22,7 @@ export async function createCredential(req: Request, res: Response) {
 
         return res.status(201).send(operationSuccesfull.message)
     } catch (error) {
-        console.log("Error instance:", error);
-        console.log("Is BadRequestError:", error instanceof BadRequestError);
-        console.log("Is UnauthorizedError:", error instanceof UnauthorizedError);
-        console.log("Is NotFoundError:", error instanceof NotFoundError);
-        console.log("Is ConflictError:", error instanceof ConflictError);
-        console.log("Is WrongDataError:", error instanceof WrongDataError);
-
-
-        if (error instanceof NotFoundError) {
-            return res.status(404).json({ error: error.message });
-        } else if (error instanceof ConflictError) {
-            return res.status(409).json({ error: error.message });
-        } else if (error instanceof WrongDataError) {
-            return res.status(401).json({ error: error.message });
-        } else if (error instanceof UnauthorizedError) {
-            return res.status(401).json({ error: error.message });
-        } else if (error instanceof BadRequestError) {
-            return res.status(401).json({ error: error.message });
-        } else {
-            console.log(error);
-            return res.status(500).json({ error: "Internal Server Error" });
-        }
+        handleError(res, error)
     }
 }
 
@@ -56,28 +36,7 @@ export async function getCredentials(req: Request, res: Response) {
 
         return res.status(200).send(myCredentials)
     } catch (error) {
-        console.log("Error instance:", error);
-        console.log("Is BadRequestError:", error instanceof BadRequestError);
-        console.log("Is UnauthorizedError:", error instanceof UnauthorizedError);
-        console.log("Is NotFoundError:", error instanceof NotFoundError);
-        console.log("Is ConflictError:", error instanceof ConflictError);
-        console.log("Is WrongDataError:", error instanceof WrongDataError);
-
-
-        if (error instanceof NotFoundError) {
-            return res.status(404).json({ error: error.message });
-        } else if (error instanceof ConflictError) {
-            return res.status(409).json({ error: error.message });
-        } else if (error instanceof WrongDataError) {
-            return res.status(401).json({ error: error.message });
-        } else if (error instanceof UnauthorizedError) {
-            return res.status(401).json({ error: error.message });
-        } else if (error instanceof BadRequestError) {
-            return res.status(401).json({ error: error.message });
-        } else {
-            console.log(error);
-            return res.status(500).json({ error: "Internal Server Error" });
-        }
+        handleError(res, error)
     }
 }
 
@@ -92,28 +51,7 @@ export async function getCredentialByID(req: Request, res: Response) {
 
         return res.status(200).send(uniqueCredential)
     } catch (error) {
-        console.log("Error instance:", error);
-        console.log("Is BadRequestError:", error instanceof BadRequestError);
-        console.log("Is UnauthorizedError:", error instanceof UnauthorizedError);
-        console.log("Is NotFoundError:", error instanceof NotFoundError);
-        console.log("Is ConflictError:", error instanceof ConflictError);
-        console.log("Is WrongDataError:", error instanceof WrongDataError);
-
-
-        if (error instanceof NotFoundError) {
-            return res.status(404).json({ error: error.message });
-        } else if (error instanceof ConflictError) {
-            return res.status(409).json({ error: error.message });
-        } else if (error instanceof WrongDataError) {
-            return res.status(401).json({ error: error.message });
-        } else if (error instanceof UnauthorizedError) {
-            return res.status(401).json({ error: error.message });
-        } else if (error instanceof BadRequestError) {
-            return res.status(401).json({ error: error.message });
-        } else {
-            console.log(error);
-            return res.status(500).json({ error: "Internal Server Error" });
-        }
+        handleError(res, error)
     }
 }
 
@@ -128,27 +66,7 @@ export async function deleteCredentialByID(req: Request, res: Response) {
 
         return res.status(200).json({'Deletion Complete' : deleteCredential})
     } catch (error) {
-        console.log("Error instance:", error);
-        console.log("Is BadRequestError:", error instanceof BadRequestError);
-        console.log("Is UnauthorizedError:", error instanceof UnauthorizedError);
-        console.log("Is NotFoundError:", error instanceof NotFoundError);
-        console.log("Is ConflictError:", error instanceof ConflictError);
-        console.log("Is WrongDataError:", error instanceof WrongDataError);
-
-
-        if (error instanceof NotFoundError) {
-            return res.status(404).json({ error: error.message });
-        } else if (error instanceof ConflictError) {
-            return res.status(409).json({ error: error.message });
-        } else if (error instanceof WrongDataError) {
-            return res.status(401).json({ error: error.message });
-        } else if (error instanceof UnauthorizedError) {
-            return res.status(401).json({ error: error.message });
-        } else if (error instanceof BadRequestError) {
-            return res.status(401).json({ error: error.message });
-        } else {
-            return res.status(500).json({ error: "Internal Server Error" });
-        }
+        handleError(res, error)
     }
 }
 
