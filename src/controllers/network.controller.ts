@@ -6,7 +6,7 @@ import { operationSuccesfull } from "../middlewares/success.middleware";
 import { userSessionBodyProtocol } from "../protocols/users.protocols";
 import * as ls from "local-storage";
 import bcrypt from "bcrypt";
-import { createNetworkService, getNetworkByIDService, getNetworkService } from "../services/network.services";
+import { createNetworkService, deleteNetworkByIDService, getNetworkByIDService, getNetworkService } from "../services/network.services";
 import handleError from "./handleErrors.controller";
 
 const prisma = new PrismaClient()
@@ -62,33 +62,14 @@ export async function getNetworkById(req: Request, res: Response) {
 export async function deleteNetworkById(req: Request, res: Response) {
     try {
         const user: userSessionBodyProtocol = res.locals.users
-        const userToken = user.token
-
-        const userData = await prisma.sessions.findFirst({
-            where: { token: userToken }
-        })
-
-
-        if (!userData) {
-            return res.status(401).json({ error: 'User session not found' });
-        }
-
 
         const { id } = req.params;
 
-
-        const deleteTry = await prisma.network.delete({
-            where: { id: Number(id), userId: userData.userId }
-        });
-
-        if (!deleteTry) {
-            return res.status(409).send('This network does not belongs to you.')
-        }
-
-
-        return res.status(204).send(operationSuccesfull);
+        const deleteNetworkByID = await deleteNetworkByIDService(user, id)
+        
+        return res.status(204).json({deleteNetworkByID});
     } catch (error) {
-        return res.status(500).send(error.message);
+        handleError(res, error)
     }
 }
 

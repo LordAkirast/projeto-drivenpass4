@@ -53,3 +53,22 @@ export async function getNetworkByIDRepository(id, userData) {
     return myUniqueNetwork
 
 }
+
+export async function deleteNetworkByIDRepository(id, userData) {
+
+
+    try {
+        const deleteNetworkByID = await prisma.network.delete({
+            where: { id: Number(id), userId: userData.userId }
+        });
+
+
+        return deleteNetworkByID
+
+    } catch (error) {
+        return null
+
+    }
+
+
+}
