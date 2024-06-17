@@ -22,6 +22,8 @@ export async function createCredential(req: Request, res: Response) {
         return res.status(201).send(operationSuccesfull.message)
     } catch (error) {
         console.log("Error instance:", error);
+        console.log("Is BadRequestError:", error instanceof BadRequestError);
+        console.log("Is UnauthorizedError:", error instanceof UnauthorizedError);
         console.log("Is NotFoundError:", error instanceof NotFoundError);
         console.log("Is ConflictError:", error instanceof ConflictError);
         console.log("Is WrongDataError:", error instanceof WrongDataError);
@@ -55,6 +57,8 @@ export async function getCredentials(req: Request, res: Response) {
         return res.status(200).send(myCredentials)
     } catch (error) {
         console.log("Error instance:", error);
+        console.log("Is BadRequestError:", error instanceof BadRequestError);
+        console.log("Is UnauthorizedError:", error instanceof UnauthorizedError);
         console.log("Is NotFoundError:", error instanceof NotFoundError);
         console.log("Is ConflictError:", error instanceof ConflictError);
         console.log("Is WrongDataError:", error instanceof WrongDataError);
@@ -89,6 +93,8 @@ export async function getCredentialByID(req: Request, res: Response) {
         return res.status(200).send(uniqueCredential)
     } catch (error) {
         console.log("Error instance:", error);
+        console.log("Is BadRequestError:", error instanceof BadRequestError);
+        console.log("Is UnauthorizedError:", error instanceof UnauthorizedError);
         console.log("Is NotFoundError:", error instanceof NotFoundError);
         console.log("Is ConflictError:", error instanceof ConflictError);
         console.log("Is WrongDataError:", error instanceof WrongDataError);
@@ -114,7 +120,6 @@ export async function getCredentialByID(req: Request, res: Response) {
 export async function deleteCredentialByID(req: Request, res: Response) {
     try {
 
-        console.log('001 - entrou')
         const { id } = req.params;
         const user: userSessionBodyProtocol = res.locals.users
         const userToken = user.token
@@ -124,6 +129,8 @@ export async function deleteCredentialByID(req: Request, res: Response) {
         return res.status(200).send('Deletion Complete')
     } catch (error) {
         console.log("Error instance:", error);
+        console.log("Is BadRequestError:", error instanceof BadRequestError);
+        console.log("Is UnauthorizedError:", error instanceof UnauthorizedError);
         console.log("Is NotFoundError:", error instanceof NotFoundError);
         console.log("Is ConflictError:", error instanceof ConflictError);
         console.log("Is WrongDataError:", error instanceof WrongDataError);
