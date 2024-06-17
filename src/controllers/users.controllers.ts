@@ -5,15 +5,13 @@ import { operationSuccesfull } from "../middlewares/success.middleware";
 import { userBodyProtocol } from "../protocols/users.protocols";
 import { deleteAllUsersRepository, getAllUsersRepository } from "../repositories/users.repositories";
 import { createUserService, loginUserService, logoutUserService } from "../services/user.services";
-
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient()
 
-
 ///o que fazer?
-////criar schemas para credentials e network
-//// criar testes para todas as rotas
+////criar schemas para credentials e network - 15 minutos
+//// criar testes para todas as rotas - 1h30
 
 export async function createUser(req: Request, res: Response) {
     const userBody = req.body as userBodyProtocol

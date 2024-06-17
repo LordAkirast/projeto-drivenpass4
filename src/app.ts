@@ -6,7 +6,6 @@ import healthRouter from './routers/health.routers';
 import usersRouter from './routers/users.routers';
 import credentialRouter from './routers/credential.routers';
 import networkRouter from './routers/network.routers';
-import { validateHealthSchema } from './middlewares/health.middleware';
 import { authenticationValidation } from './middlewares/authentication.middleware';
 
 
@@ -21,11 +20,5 @@ app
     .use('/users', usersRouter)
     .use('/credential',authenticationValidation, credentialRouter)
     .use('/network',authenticationValidation, networkRouter)
-
-
-
-
-
-
-
+    
 export default app
