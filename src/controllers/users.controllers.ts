@@ -4,7 +4,7 @@ import { userBodyProtocol } from "../protocols/users.protocols";
 import { operationSuccesfull } from "../middlewares/success.middleware";
 import { deleteAllUsersRepository, getAllUsersRepository } from "../repositories/users.repositories";
 import { createUserService, loginUserService, logoutUserService } from "../services/user.services";
-import { NotFoundError, ConflictError, WrongDataError } from "../errors/errorMessages";
+import { NotFoundError, ConflictError, WrongDataError, BadRequestError, UnauthorizedError } from "../errors/errorMessages";
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient()
@@ -12,14 +12,17 @@ const prisma = new PrismaClient()
 export async function createUser(req: Request, res: Response) {
     const userBody = req.body as userBodyProtocol
 
+
     try {
-
+        const successMessage = operationSuccesfull.message
         const hashedPassword = await bcrypt.hash(userBody.password, 10);
-        await createUserService(userBody, hashedPassword)
+        const createUser = await createUserService(userBody, hashedPassword)
 
-        return res.status(201).send(operationSuccesfull.message)
+        return res.status(201).json(`${successMessage} : ${createUser}`)
     } catch (error) {
         console.log("Error instance:", error);
+        console.log("Is BadRequestError:", error instanceof BadRequestError);
+        console.log("Is UnauthorizedError:", error instanceof UnauthorizedError);
         console.log("Is NotFoundError:", error instanceof NotFoundError);
         console.log("Is ConflictError:", error instanceof ConflictError);
         console.log("Is WrongDataError:", error instanceof WrongDataError);
@@ -30,6 +33,10 @@ export async function createUser(req: Request, res: Response) {
         } else if (error instanceof ConflictError) {
             return res.status(409).json({ error: error.message });
         } else if (error instanceof WrongDataError) {
+            return res.status(401).json({ error: error.message });
+        } else if (error instanceof UnauthorizedError) {
+            return res.status(401).json({ error: error.message });
+        } else if (error instanceof BadRequestError) {
             return res.status(401).json({ error: error.message });
         } else {
             console.log(error);
