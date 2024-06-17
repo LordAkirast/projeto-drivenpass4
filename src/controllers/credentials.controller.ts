@@ -126,7 +126,7 @@ export async function deleteCredentialByID(req: Request, res: Response) {
 
         const deleteCredential = await deleteCredentialByIDService(id, user)
 
-        return res.status(200).send('Deletion Complete')
+        return res.status(200).json({'Deletion Complete' : deleteCredential})
     } catch (error) {
         console.log("Error instance:", error);
         console.log("Is BadRequestError:", error instanceof BadRequestError);
