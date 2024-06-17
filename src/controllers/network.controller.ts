@@ -6,6 +6,8 @@ import { operationSuccesfull } from "../middlewares/success.middleware";
 import { userSessionBodyProtocol } from "../protocols/users.protocols";
 import * as ls from "local-storage";
 import bcrypt from "bcrypt";
+import { createNetworkService } from "../services/network.services";
+import handleError from "./handleErrors.controller";
 
 const prisma = new PrismaClient()
 
@@ -17,39 +19,15 @@ export async function createNetwork(req: Request, res: Response) {
     const userToken = user.token
 
     const hashedPassword = await bcrypt.hash(networkBody.password, 10);
-
-
-    ///repositories
-    const userData = await prisma.sessions.findFirst({
-        where: { token: userToken }
-    })
-    ///repositories
-
-    ///services
-    if (!userData) {
-        return res.status(401).json({ error: 'Token not found on sessions.' })
-    }
-    ///services
-
     try {
+        const createNetwork = await createNetworkService(user, networkBody, hashedPassword)
 
-        const networkData = {
-            title: networkBody.title,
-            network: networkBody.network,
-            password: hashedPassword,
-            userId: userData.userId
-        };
-
-
-        await prisma.network.create({
-            data: networkData
+        return res.status(201).json({
+            message: operationSuccesfull.message,
+            network: createNetwork
         })
-
-
-        return res.status(201).send(operationSuccesfull.message)
     } catch (error) {
-
-        return res.status(500).send(error.message)
+        handleError(res, error)
 
     }
 }
