@@ -3,7 +3,7 @@ import { credentialAlreadyExists } from "../middlewares/errors.middleware";
 import { userSessionBodyProtocol } from "../protocols/users.protocols";
 import { getSessionsCredentialsRepository, verifyExistingCredentialRepository, createCredentialRepository, getAllCredentialRepository, getUniqueCredentialRepository, deleteCredentialByIDRepository } from "../repositories/credentials.repositories";
 import { NotFoundError, ConflictError, UnauthorizedError, BadRequestError } from "../errors/errorMessages";
-
+import Cryptr from "cryptr";
 
 export async function createCredentialService(user: userSessionBodyProtocol, credentialBody: credentialBodyProtocol, hashedPassword) {
 
@@ -37,7 +37,7 @@ export async function createCredentialService(user: userSessionBodyProtocol, cre
 }
 
 
-export async function getCredentialService(user: userSessionBodyProtocol) {
+export async function getCredentialService(user: userSessionBodyProtocol, cryptr) {
 
     const userData = await getSessionsCredentialsRepository(user)
 
@@ -47,7 +47,14 @@ export async function getCredentialService(user: userSessionBodyProtocol) {
 
     const myCredentials = await getAllCredentialRepository(user, userData)
 
-    return myCredentials
+    const credentialData = myCredentials.map(credential => {
+        const unHashedPassword = cryptr.decrypt(credential.password);
+        return {
+            ...credential,
+            password: unHashedPassword
+        };
+    }); 
+    return credentialData
 }
 
 export async function getCredentialByIDService(id, user: userSessionBodyProtocol,) {

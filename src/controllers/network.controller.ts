@@ -6,15 +6,18 @@ import { networkBodyProtocol } from "../protocols/network.protocols";
 import { userSessionBodyProtocol } from "../protocols/users.protocols";
 import { DEVdeleteAllNetworkService, createNetworkService, deleteNetworkByIDService, getNetworkByIDService, getNetworkService } from "../services/network.services";
 import bcrypt from "bcrypt";
+import Cryptr from "cryptr";
 
 const prisma = new PrismaClient()
+const cryptr = new Cryptr('networkPassword');
 
 
 export async function createNetwork(req: Request, res: Response) {
     const networkBody = req.body as networkBodyProtocol
 
     const user: userSessionBodyProtocol = res.locals.users
-    const hashedPassword = await bcrypt.hash(networkBody.password, 10);
+    const hashedPassword = cryptr.encrypt(networkBody.password);
+    //const hashedPassword = await bcrypt.hash(networkBody.password, 10);
 
     try {
         const createNetwork = await createNetworkService(user, networkBody, hashedPassword)
@@ -32,7 +35,7 @@ export async function getNetwork(req: Request, res: Response) {
     const user: userSessionBodyProtocol = res.locals.users
 
     try {
-        const myNetworks = await getNetworkService(user)
+        const myNetworks = await getNetworkService(user, cryptr)
 
         return res.status(200).json({
             message: operationSuccesfull.message,

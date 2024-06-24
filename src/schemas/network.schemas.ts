@@ -1,7 +1,7 @@
 import Joi, { number } from "joi";
 
 export const networkSchema = Joi.object({
-    title: Joi.string().email().required(),
+    title: Joi.string().required(),
     network: Joi.string().min(3).required(),
     password: Joi.string().min(3).required()
 })

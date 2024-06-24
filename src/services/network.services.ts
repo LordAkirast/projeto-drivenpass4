@@ -24,7 +24,7 @@ export async function createNetworkService(user, networkBody, hashedPassword) {
 
 }
 
-export async function getNetworkService(user) {
+export async function getNetworkService(user, cryptr) {
 
 
   const userData = await getSessionsNetworkRepository(user)
@@ -37,7 +37,15 @@ export async function getNetworkService(user) {
 
 const myNetworks = await getNetworkRepository(userData)
 
-return myNetworks
+const networkData = myNetworks.map(network => {
+  const unHashedPassword = cryptr.decrypt(network.password);
+  return {
+      ...network,
+      password: unHashedPassword
+  };
+});
+
+return networkData
 
 }
 

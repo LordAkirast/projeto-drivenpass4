@@ -6,8 +6,12 @@ import { credentialBodyProtocol } from "../protocols/credentials.protocols";
 import { userSessionBodyProtocol } from "../protocols/users.protocols";
 import { getCredentialByIDService, createCredentialService, getCredentialService, deleteCredentialByIDService } from "../services/credential.services";
 import bcrypt from "bcrypt";
+import Cryptr from "cryptr";
 
 const prisma = new PrismaClient()
+const cryptr = new Cryptr('credentialsPassword');
+
+
 
 
 export async function createCredential(req: Request, res: Response) {
@@ -15,7 +19,8 @@ export async function createCredential(req: Request, res: Response) {
         const credentialBody = req.body as credentialBodyProtocol
         const user: userSessionBodyProtocol = res.locals.users
         const userToken = user.token
-        const hashedPassword = await bcrypt.hash(credentialBody.password, 10);
+        const hashedPassword = cryptr.encrypt(credentialBody.password);
+        //const hashedPassword = await bcrypt.hash(credentialBody.password, 10);
 
         await createCredentialService(user, credentialBody, hashedPassword)
 
@@ -31,7 +36,7 @@ export async function getCredentials(req: Request, res: Response) {
     const userToken = user.token
 
     try {
-        const myCredentials = await getCredentialService(user)
+        const myCredentials = await getCredentialService(user, cryptr)
 
         return res.status(200).send(myCredentials)
     } catch (error) {
